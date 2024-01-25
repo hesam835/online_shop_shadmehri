@@ -10,7 +10,7 @@ from .managers import UserManager
 from django.core.validators import RegexValidator
 import re
 from core.utils import user_image_path
-from orders.models import DiscountCode
+from order.models import DiscountCode
 
 # Create your models here.
 class User(AbstractBaseUser):

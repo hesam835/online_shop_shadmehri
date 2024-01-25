@@ -1,11 +1,7 @@
 from django.db import models
-
 from core.models import BaseModel
-
 from accounts.models import User
-
-from products.models import Product
-
+from product.models import Product
 
 # Create your models here.
 
