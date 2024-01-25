@@ -12,7 +12,7 @@ from products.models import Product
 
 class Order(BaseModel):
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    is_paid = models.BooleanField(default=False)cre
+    is_paid = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     discount_code = models.ForeignKey("DiscountCode", on_delete=models.PROTECT)
     
