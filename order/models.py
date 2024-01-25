@@ -1,29 +1,49 @@
 from django.db import models
+
+from core.models import BaseModel
+
 from accounts.models import User
-from product.models import Discount_Code,Product
+
+from products.models import Product
+
 
 # Create your models here.
 
 
-class Order(models.Model):
-    total_price = models.DecimalField(max_digits = 10 , decimal_places = 2)
-    is_paid = models.BooleanField(Default = False)
-    user_id = models.ForeignKey(User , on_deleted = models.CASCADE)
-    discount_code_id = models.ForeignKey(Discount_Code,on_deleted = models.CASCADE)
+class Order(BaseModel):
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    is_paid = models.BooleanField(default=False)cre
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    discount_code = models.ForeignKey("DiscountCode", on_delete=models.PROTECT)
     
     
-class Orde_Item(models.Model):
-    quantity = models.IntegerField(max_length = 2)
-    order_id = models.ForeignKey(Order , on_deleted = models.CASCADE)
-    product_id = models.ForeignKey(Product , on_deleted = models.CASCADE)
+class OrderItem(BaseModel):
+    quantity = models.IntegerField()
+    order = models.ForeignKey("Order", on_delete=models.PROTECT)
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
 
 
-class Transaction(models.Model):
-    total_price = models.DecimalField(max_digits = 10 , decimal_places = 2)
-    transaction_type = models.CharField(max_length = 50)
-    user_id = models.ForeignKey(User , on_deleted = models.CASCADE)
-    order_id = models.ForeignKey(Order , on_deleted = models.CASCADE)
-    discount_code_id = models.ForeignKey(Discount_Code,on_deleted = models.CASCADE)
+class DiscountCode(BaseModel):
+    code = models.CharField(max_length=255)
+    percentage = models.IntegerField()
+    expiration_date = models.DateTimeField()
+    is_active = models.BooleanField(default=True)
+
+# Foreign keys
+
+# user = models.ForeignKey("User", on_delete=models.PROTECT)
+
+class Transaction(BaseModel):
+    TRANSACTION_TYPES = (
+    ("accounting transactions", "accounting transactions"),
+    ("receipts", "receipts"),
+    )
+
+    final_price = models.DecimalField(max_digits=10, decimal_places=2)
+    transaction_type = models.CharField(max_length=255, choices=TRANSACTION_TYPES)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    order = models.OneToOneField(Order, on_delete=models.PROTECT, primary_key=True)
+    # discount_code = models.ForeignKey("DiscountCode", on_delete=models.PROTECT)
     
     
     
