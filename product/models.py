@@ -5,7 +5,6 @@ from accounts.models import User
 from core.utils import category_image_path, product_image_path
 
 
-
 class Category(BaseModel):
     name = models.CharField(max_length=255)
     is_sub = models.BooleanField(default=False)
@@ -13,6 +12,7 @@ class Category(BaseModel):
     parent_category = models.ForeignKey("self", on_delete=models.PROTECT)
     discount = models.ForeignKey("Discount", on_delete=models.PROTECT, null=True, blank=True)
     
+
 
 class Product(BaseModel):
     name = models.CharField(max_length=255)
@@ -40,3 +40,9 @@ class Comment(models.Model):
     product_id = models.ForeignKey(Product , on_delete = models.PROTECT)
     send_at = models.TimeField(auto_now_add = True)
     
+    
+class News(BaseModel):
+    title = models.TextField(max_length = 100)
+    message_body = models.TextField(max_length = 1000)
+    create_by_user_id = models.ForeignKey(User , on_delete = models.PROTECT)
+    image = models.ImageField()

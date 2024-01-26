@@ -9,3 +9,6 @@ def category_image_path(instance, filename):
 
 def product_image_path(instance, filename):
     return f'products/{instance.category.name}/{filename}'
+
+# def news_image_path(instance , filename):
+#     return f'product/{instance}'
