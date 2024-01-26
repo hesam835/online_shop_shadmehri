@@ -20,7 +20,7 @@ class BaseModel(models.Model):
         is_deleted = models.BooleanField(default=False)
         deleted_at = models.DateTimeField(auto_now=True, editable=False)
         
-        def delete(self):
-            self.is_deleted = True
-            self.save()
-            objects = AppManager()
+    def delete(self):
+        self.is_deleted = True
+        self.save()
+    objects = AppManager()

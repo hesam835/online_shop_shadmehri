@@ -96,3 +96,6 @@ class Address(BaseModel):
     detailed_address = models.TextField()
     postal_code = models.IntegerField()
     user = models.ForeignKey(User, on_delete=models.PROTECT) # this relation is between both customers and staff with Address.
+
+
+class Cuppon()

@@ -11,6 +11,11 @@ class Order(BaseModel):
     is_paid = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     discount_code = models.ForeignKey("DiscountCode", on_delete=models.PROTECT)
+    province = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    detailed_address = models.TextField()
+    postal_code = models.IntegerField()
+    cuppon_active = models.BooleanField(default = True)
     
     
 class OrderItem(BaseModel):
@@ -24,7 +29,8 @@ class DiscountCode(BaseModel):
     percentage = models.IntegerField()
     expiration_date = models.DateTimeField()
     is_active = models.BooleanField(default=True)
-
+    count = models.IntegerField(max_length = 2)
+    
 # Foreign keys
 
 # user = models.ForeignKey("User", on_delete=models.PROTECT)
