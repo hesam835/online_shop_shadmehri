@@ -46,3 +46,4 @@ class News(BaseModel):
     message_body = models.TextField(max_length = 1000)
     create_by_user_id = models.ForeignKey(User , on_delete = models.PROTECT)
     image = models.ImageField()
+
