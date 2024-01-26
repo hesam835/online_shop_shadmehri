@@ -98,4 +98,3 @@ class Address(BaseModel):
     user = models.ForeignKey(User, on_delete=models.PROTECT) # this relation is between both customers and staff with Address.
 
 
-class Cuppon()
