@@ -24,12 +24,7 @@ class OrderItem(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
 
 
-class DiscountCode(BaseModel):
-    code = models.CharField(max_length=255)
-    percentage = models.IntegerField()
-    expiration_date = models.DateTimeField()
-    is_active = models.BooleanField(default=True)
-    count = models.IntegerField(max_length = 2)
+
     
 # Foreign keys
 

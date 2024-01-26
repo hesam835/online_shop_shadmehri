@@ -10,9 +10,15 @@ from .managers import UserManager
 from django.core.validators import RegexValidator
 import re
 from core.utils import user_image_path
-from order.models import DiscountCode
 
 # Create your models here.
+class DiscountCode(BaseModel):
+    code = models.CharField(max_length=255)
+    percentage = models.IntegerField()
+    expiration_date = models.DateTimeField()
+    is_active = models.BooleanField(default=True)
+    count = models.IntegerField()
+
 class User(AbstractBaseUser):
     ROLE_CHOICES = (
     ("Product Manager", "Product Manager"),
