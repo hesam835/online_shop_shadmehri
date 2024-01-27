@@ -12,12 +12,7 @@ import re
 from core.utils import user_image_path
 
 # Create your models here.
-class DiscountCode(BaseModel):
-    code = models.CharField(max_length=255)
-    percentage = models.IntegerField()
-    expiration_date = models.DateTimeField()
-    is_active = models.BooleanField(default=True)
-    count = models.IntegerField()
+
 
 class User(AbstractBaseUser):
     ROLE_CHOICES = (
@@ -36,9 +31,8 @@ class User(AbstractBaseUser):
     updated_at = models.DateTimeField(auto_now=True)
     is_deleted = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(auto_now=True, editable=False)
-    is_active = models.BooleanField(default=False) # when get otp code with SMS or email, then set this to True.
+    is_active = models.BooleanField(default=True) # when get otp code with SMS or email, then set this to True.
     is_admin = models.BooleanField(default=False)
-    discount_code = models.ForeignKey(DiscountCode, on_delete=models.PROTECT) # this relation is between customer and discount_code not staff.
     objects = UserManager()
     USERNAME_FIELD = "phone_number" # this field 'phone_number here!' must always be unique!!!
     REQUIRED_FIELDS = ["email", "first_name", "last_name"] # password is going to be asked by django automatiacaly & phone_number will too because its in USERNAME_FIELD.
