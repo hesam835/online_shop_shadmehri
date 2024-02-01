@@ -9,7 +9,7 @@ class Category(BaseModel):
     name = models.CharField(max_length=255)
     is_sub = models.BooleanField(default=False)
     image = models.ImageField(upload_to=category_image_path)
-    parent_category = models.ForeignKey("self", on_delete=models.PROTECT)
+    parent_category = models.ForeignKey("self", on_delete=models.PROTECT , null=True , blank = True)
     discount = models.ForeignKey("Discount", on_delete=models.PROTECT, null=True, blank=True)
     
     def __str__(self) -> str:

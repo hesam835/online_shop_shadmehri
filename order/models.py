@@ -17,8 +17,8 @@ def create_order_from_cart(self, cart): # this cart is an object of Cart model
 
 class Order(BaseModel):
     PAYMENT_CHOICES = (
-        (True, "Paid"),
-        (False, "Not Paid")
+        ("Paid",True),
+        ("Not Paid",False)
     )
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     is_paid = models.CharField(max_length=25, choices=PAYMENT_CHOICES, default=False) # when we create order from cart we have to set is_paid to True
