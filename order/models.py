@@ -61,7 +61,7 @@ class Cart(models.Model):
     
     
     def __str__(self) -> str:
-        return f"total cart: {self.calculate_total_price}"
+        return f"total cart: {self.calculate_total_price()}"
     
     def calculate_total_price(self):
         return sum(item.total_price() for item in self.cart_items.all())
@@ -75,12 +75,12 @@ class CartItem(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     # Foreign Keys
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE,related_name="cart_items")
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     
     
     def __str__(self) -> str:
-        return f"total price of {self.quantity} {self.product.name}: {self.total_price}"
+        return f"total price of {self.quantity} {self.product.name}: {self.total_price()}"
     
     def total_price(self):
         return self.quantity * self.product.price
