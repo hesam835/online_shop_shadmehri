@@ -59,12 +59,11 @@ class Cart(models.Model):
     # Foreign Keys
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     
+    def calculate_total_price(self):
+        return sum(item.total_price() for item in self.cart_items.all())
     
     def __str__(self) -> str:
         return f"total cart: {self.calculate_total_price()}"
-    
-    def calculate_total_price(self):
-        return sum(item.total_price() for item in self.cart_items.all())
 
     class Meta:
         verbose_name_plural = 'carts'

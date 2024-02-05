@@ -78,8 +78,8 @@ class Discount(BaseModel):
     
 class Comment(BaseModel):
     text_message = models.TextField(max_length = 500)
-    user_id = models.ForeignKey(User , on_delete = models.PROTECT)
-    product_id = models.ForeignKey(Product , on_delete = models.PROTECT)
+    user_id = models.ForeignKey(User , on_delete = models.CASCADE)
+    product_id = models.ForeignKey(Product , on_delete = models.CASCADE)
     
     
 class News(BaseModel):

@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin
 from django.core.validators import EmailValidator
 from core.models import BaseModel
 from .managers import UserManager
@@ -14,7 +14,7 @@ from core.utils import user_image_path
 # Create your models here.
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser,PermissionsMixin):
     ROLE_CHOICES = (
     ("Product Manager", "Product Manager"),
     ("Supervisor", "Supervisor"),
@@ -78,12 +78,6 @@ class User(AbstractBaseUser):
     
     def str(self):
         return self.email
-    
-    def has_perm(self, perm, obj=None):
-        return True
-    
-    def has_module_perms(self, app_label):
-        return True
     
     @property
     def is_staff(self):
