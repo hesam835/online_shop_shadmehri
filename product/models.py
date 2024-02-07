@@ -1,21 +1,52 @@
 from django.db import models
 from accounts.models import User
 from core.models import BaseModel
+from django.utils.text import slugify
 from accounts.models import User
 from core.utils import category_image_path, product_image_path
+from django.urls import reverse
 
-
+class Discount(BaseModel):
+    TYPE_OF_DISCOUNT = (
+        ("percent", "Percent"),
+        ("decimal", "Decimal"),
+    )
+    type = models.CharField(max_length=255,choices=TYPE_OF_DISCOUNT)
+    value = models.DecimalField(max_digits=10, decimal_places=2)
+    max_value = models.DecimalField(max_digits=10, decimal_places=2)
+    is_active = models.BooleanField(default=False)
+    user = models.ManyToManyField(User) # this relation is between staff and Discount not customer
+    
+    def __str__(self) -> str:
+        return f"{self.type}"
+    
+    
 class Category(BaseModel):
     name = models.CharField(max_length=255)
     is_sub = models.BooleanField(default=False)
     description = models.TextField()
+    slug = models.SlugField(unique=True, blank=True)
     image = models.ImageField(upload_to=category_image_path)
-    parent_category = models.ForeignKey("self", on_delete=models.PROTECT , null=True , blank = True)
-    discount = models.ForeignKey("Discount", on_delete=models.PROTECT, null=True, blank=True)
+    parent_category = models.ForeignKey("self", on_delete=models.CASCADE , null=True , blank = True)
+    discount = models.ForeignKey(Discount, on_delete=models.CASCADE, null=True, blank=True)
     
     def __str__(self) -> str:
         return f'{self.name}'
     
+    
+    def save(self, *args, **kwargs):
+        if not self.image:
+            self.image = 'path/to/default/image.jpg'
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        if self.is_sub:
+            return reverse("products", kwargs={"category_slug": self.parent_category.slug, "subcategory_slug": self.slug})
+        else:
+            return reverse("category", kwargs={"slug": self.slug})
+        
     class Meta:
         verbose_name_plural = 'categories'
     
@@ -24,17 +55,28 @@ class Category(BaseModel):
 class Product(BaseModel):
     name = models.CharField(max_length=255)
     brand = models.CharField(max_length=255)
+    slug = models.SlugField(unique=True, blank=True)
     price = models.CharField(max_length=100)
     description = models.TextField()
     features = models.ManyToManyField("ProductFeature", through='ProductFeatureValue')
     inventory_quantity = models.PositiveIntegerField()
     image = models.ImageField(upload_to=product_image_path)
-    user_id = models.ForeignKey(User, on_delete=models.PROTECT) # this relation is between staff and Product not customer
-    category_id = models.ForeignKey(Category, on_delete=models.PROTECT)
-    discount_id = models.ForeignKey("Discount", on_delete=models.PROTECT, null=True, blank=True)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE) # this relation is between staff and Product not customer
+    category_id = models.ForeignKey(Category, on_delete=models.CASCADE)
+    discount_id = models.ForeignKey(Discount, on_delete=models.CASCADE, null=True, blank=True)
     
     def __str__(self) -> str:
         return f'{self.name},{self.brand}'
+
+    def save(self, *args, **kwargs):
+        if not self.image:
+            self.image = 'path/to/default/image.jpg'
+        if not self.slug:
+            self.slug = slugify(self.brand + "-" + self.name)
+        super().save(*args, **kwargs)
+    
+    def get_absolute_url(self):
+        return reverse("product_detail", kwargs={"pk": self.slug})
     
     class Meta:
         verbose_name_plural = 'products'
@@ -62,19 +104,7 @@ class ProductFeatureValue(BaseModel):
     class Meta:
         verbose_name_plural = 'feature values'
 
-class Discount(BaseModel):
-    TYPE_OF_DISCOUNT = (
-        ("percent", "Percent"),
-        ("decimal", "Decimal"),
-    )
-    type = models.CharField(max_length=255,choices=TYPE_OF_DISCOUNT)
-    value = models.DecimalField(max_digits=10, decimal_places=2)
-    max_value = models.DecimalField(max_digits=10, decimal_places=2)
-    is_active = models.BooleanField(default=False)
-    user = models.ManyToManyField(User) # this relation is between staff and Discount not customer
-    
-    def __str__(self) -> str:
-        return f"{self.type}"
+
     
     
 class Comment(BaseModel):

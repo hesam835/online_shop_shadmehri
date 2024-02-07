@@ -5,16 +5,15 @@ from .models import Product,Category
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['name', 'description' , 'image' , 'discount']
+        fields = ['name', 'description' , 'image' , 'discount','slug','parent_category']
         
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['name' , 'price' , 'image' , 'description' ]
+        fields ='__all__'
         
-# class ProductSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Product
-#         fields = ['name' , 'price' , 'image' , 'description' ]
+
+        
+
         
         

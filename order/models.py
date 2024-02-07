@@ -40,8 +40,8 @@ class OrderItem(BaseModel):
     quantity = models.IntegerField()
     
     # Foreign Keys
-    order = models.ForeignKey("Order", on_delete=models.PROTECT)
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    order = models.ForeignKey("Order", on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     
     def __str__(self) -> str:
         return f"number of {self.product.name}: {self.quantity}"

@@ -78,7 +78,7 @@ class User(AbstractBaseUser,PermissionsMixin):
     
     def str(self):
         return self.email
-    
+
     @property
     def is_staff(self):
         return self.is_admin

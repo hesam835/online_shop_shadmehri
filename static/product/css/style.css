@@ -1139,5 +1139,9 @@ textarea#comment::placeholder {
 #navbarSupportedContent.nav-normal{
     transform: none;
 }
-
+.product-image {
+    width: 100px; /* Set your desired width */
+    height: 150px; /* Set your desired height */
+    /* Add any additional styling as needed */
+}
 /* contact section end*/
