@@ -1,5 +1,9 @@
 .product-image {
     width: 300px; /* عرض مورد نظر */
     height: 300px; /* ارتفاع مورد نظر */
-    /* افزودن هر گونه استایل اضافی که نیاز دارید */
+}
+
+.detail-image{
+    width: 500px;
+    height:500px;
 }
