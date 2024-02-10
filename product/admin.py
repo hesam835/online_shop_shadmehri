@@ -20,7 +20,7 @@ class FeatureListPlay(admin.ModelAdmin):
     list_display = ("name",)
     
 class FeatureValueListPlay(admin.ModelAdmin):
-    list_display = ("value","product")
+    list_display = ("value",)
     
 class CommentListPlay(admin.ModelAdmin):
     list_display = ("user_id","product_id")

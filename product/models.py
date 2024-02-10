@@ -60,10 +60,10 @@ class Product(BaseModel):
     slug = models.SlugField(unique=True, blank=True)
     price = models.CharField(max_length=100)
     description = models.TextField()
-    # features = models.ManyToManyField("ProductFeature", through='ProductFeatureValue')
+    features = models.ManyToManyField("ProductFeature", through='ProductFeatureValue',blank=True)
     inventory_quantity = models.PositiveIntegerField()
     image = models.ImageField(upload_to=product_image_path)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE) # this relation is between staff and Product not customer
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE,related_name="products") # this relation is between staff and Product not customer
     category_id = models.ForeignKey(Category, on_delete=models.CASCADE)
     discount_id = models.ForeignKey(Discount, on_delete=models.CASCADE, null=True, blank=True)
     
@@ -88,7 +88,7 @@ class ProductFeature(BaseModel):
     # text_value = models.TextField(blank=True, null=True)
     # numeric_value = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     #Foreign Keys
-    products = models.ManyToManyField("Product", through='ProductFeatureValue', blank=True)
+    # products = models.ManyToManyField("Product", through='ProductFeatureValue', blank=True)
     def __str__(self) -> str:
         return f"{self.name}"
     class Meta:
@@ -97,8 +97,8 @@ class ProductFeature(BaseModel):
 
 class ProductFeatureValue(BaseModel):
     value = models.CharField(max_length=255)    
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    feature = models.ForeignKey(ProductFeature, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,related_name="products_feature_value")
+    feature = models.ForeignKey(ProductFeature, on_delete=models.CASCADE,related_name="products_feature_value")
     
     def __str__(self) -> str:
         return f"{self.value} for {self.feature.name} in {self.product.name}"

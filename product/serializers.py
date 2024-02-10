@@ -18,10 +18,10 @@ class DiscountSerializer(serializers.ModelSerializer):
         model = Discount
         fields ='__all__'
         
-# class ProductFeatureSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = ProductFeature
-#         fields ='__all__'
+class ProductFeatureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductFeature
+        fields ='__all__'
 
         
 class CommentSerializer(serializers.ModelSerializer):
@@ -35,8 +35,8 @@ class NewsSerializer(serializers.ModelSerializer):
         model = News
         fields ='__all__'
         
-# class ProductFeatureValueSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = ProductFeatureValue
-#         fields ='__all__'
+class ProductFeatureValueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductFeatureValue
+        fields ='__all__'
         

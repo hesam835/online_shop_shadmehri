@@ -4,8 +4,8 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Product,Category,Discount,Comment
-from .serializers import CategorySerializer,ProductSerializer,DiscountSerializer,CommentSerializer,NewsSerializer
+from .models import Product,Category,Discount,Comment,ProductFeatureValue,ProductFeature,News
+from .serializers import CategorySerializer,ProductSerializer,DiscountSerializer,CommentSerializer,NewsSerializer,ProductFeatureSerializer,ProductFeatureValueSerializer
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 
@@ -33,18 +33,18 @@ def get_product(request,slug):
     
 @api_view(['GET'])
 def get_detail_product(request,slug):
-    product = get_object_or_404(Product, slug=slug)
+    product = Product.objects.get(slug=slug)
     serializer = ProductSerializer(instance=product)
-    # features = ProductFeature.objects.filter(products=product)
-    # features_serializer = ProductFeatureSerializer(instance=features, many=True)
-    # feature_values = ProductFeatureValue.objects.filter(product=product)
-    # feature_value_serializer = ProductFeatureValueSerializer(instance=feature_values, many=True)
-    comments = Comment.objects.filter(product=product)
+    features = ProductFeature.objects.filter(product=product)
+    features_serializer = ProductFeatureSerializer(instance=features, many=True)
+    feature_values = ProductFeatureValue.objects.filter(product=product)
+    feature_value_serializer = ProductFeatureValueSerializer(instance=feature_values, many=True)
+    comments = Comment.objects.filter(product_id=product)
     comment_serializer = CommentSerializer(instance=comments, many=True)
-    discount_serializer = DiscountSerializer(instance=product.discount) 
+    discount_serializer = DiscountSerializer(instance=product.discount_id) 
     response_data = {
-    # "features":features_serializer.data,
-    # "feature_values":feature_value_serializer.data,
+    "features":features_serializer.data,
+    "feature_values":feature_value_serializer.data,
     "product":serializer.data,
     "discounts":discount_serializer.data,
     "comments":comment_serializer.data,
@@ -55,15 +55,14 @@ def get_detail_product(request,slug):
     
     
 @api_view(['GET'])
-def get_discount(request,slug):
-    category_parent = Category.objects.get(slug=slug)
-    discount = Discount.objects.filter(category_id = category_parent)
+def get_discount(request):
+    discount = Discount.objects.all()
     serializer = DiscountSerializer(discount,many=True)
     return Response({'discount':serializer.data})
 
 @api_view(['GET'])
 def get_comment(request,slug):
-    product_parent = Product.objects.get(slug=slug)
+    product_parent = Discount.objects.get(slug=slug)
     comment = Comment.objects.filter(product_id = product_parent)
     serializer = CommentSerializer(comment,many=True)
     return Response({'comment':serializer.data})
@@ -72,13 +71,13 @@ def get_comment(request,slug):
 @api_view(['GET'])
 def get_productfeature(request,slug):
     product_parent = Product.objects.get(slug=slug)
-    product_feature = ProductFeature.objects.filter(product_id = product_parent)
-    serializer = ProductFeatureSerializer(product_feature,many=True)
+    product_feature = ProductFeatureValue.objects.filter(product= product_parent)
+    serializer = ProductFeatureValueSerializer(product_feature,many=True)
     return Response({'product_feature':serializer.data})
 
 @api_view(['GET'])
-def get_news(request,slug):
-    news = ProductFeature.objects.all()
+def get_news(request):
+    news = News.objects.all()
     serializer =NewsSerializer(news,many=True)
     return Response({'news':serializer.data})
 

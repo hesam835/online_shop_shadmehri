@@ -1,0 +1,70 @@
+    /* Style for cycle1 section */
+    .cycle1 {
+        background-color: #c5c5c5; /* رنگ پس زمینه */
+        padding: 50px 20px; /* فاصله بالا و پایین، و فاصله چپ و راست */
+        width: 800px;
+        border-radius: 5%;
+        margin-left: 20%;
+        margin-bottom: 7%;
+    }
+
+    /* Style for container within cycle1 section */
+    .cycle1 .container {
+        max-width: 1200px; /* عرض حداکثر کانتینر */
+        margin-right: 20% auto; /* مرکز چین کردن کانتینر */
+        margin-left: 20% auto;
+    }
+
+    /* Style for row within cycle1 section */
+    .cycle1 .row {
+        display: flex; /* استفاده از flexbox برای انعطاف پذیری */
+        justify-content: center; /* مرکز چین کردن افقی */
+        align-items: center; /* مرکز چین کردن عمودی */
+    }
+    /* Style for product detail container */
+    #productDetailContainer {
+        display: flex;
+        justify-content: center;
+        margin-top: 50px;
+    }
+
+    /* Style for product image */
+    .laptop1_img img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* Style for product information */
+    .product-info {
+        margin-top: 20px;
+        font-size: 16px;
+    }
+
+    /* Style for add to cart button */
+    .read_more {
+        display: inline-block;
+        background-color: #007bff;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        margin-top: 20px;
+    }
+
+    .read_more:hover {
+        background-color: #0056b3;
+    }
+
+    /* Style for comments section */
+    .comments {
+        margin-top: 20px;
+    }
+
+    .comments ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .comments ul li {
+        margin-bottom: 10px;
+    }
