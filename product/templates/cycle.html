@@ -78,7 +78,13 @@
              $("#navbarSupportedContent").toggleClass("nav-normal")
          })
 
-         fetch('api/products/')
+         fetch('api/products/',{
+            method:"GET",
+            headers:{
+               "Content-Type":"application/json",
+               "Authorization":`Bearer ${localStorage.getItem("access_token")}`
+            }
+         })
          .then(response => response.json())
          .then(data => {
              var productList = $('#list-category');

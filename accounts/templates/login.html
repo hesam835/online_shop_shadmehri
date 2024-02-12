@@ -41,22 +41,20 @@
 					</span>
 
 					<div class="wrap-input100 validate-input" data-validate = "Valid email is: a@b.c">
-						<input class="input100" type="text" name="email">
-						<span class="focus-input100" data-placeholder="Email"></span>
+						<input class="input100" type="text" id="username1" name="username">
 					</div>
 
 					<div class="wrap-input100 validate-input" data-validate="Enter password">
 						<span class="btn-show-pass">
 							<i class="zmdi zmdi-eye"></i>
 						</span>
-						<input class="input100" type="password" name="pass">
-						<span class="focus-input100" data-placeholder="Password"></span>
+						<input class="input100" type="password" id="password1" name="password">
 					</div>
 
 					<div class="container-login100-form-btn">
 						<div class="wrap-login100-form-btn">
 							<div class="login100-form-bgbtn"></div>
-							<button class="login100-form-btn">
+							<button type="submit" id="login1" class="login100-form-btn">
 								Login
 							</button>
 						</div>
@@ -67,7 +65,7 @@
 							Don’t have an account?
 						</span>
 
-						<a class="txt2" href="#">
+						<a class="txt2" href={% url "register" %}>
 							Sign Up
 						</a>
 					</div>
@@ -77,9 +75,9 @@
 	</div>
 	
 
-	<div id="dropDownSelect1"></div>
+	<div id="dropDownSelect1"></div> 
 	
-<!--===============================================================================================-->
+{% comment %} <!--===============================================================================================-->
 	<script src="{% static 'login/vendor/jquery/jquery-3.2.1.min.js' %}"></script>
 <!--===============================================================================================-->
 	<script src="{% static 'login/vendor/animsition/js/animsition.min.js' %}"></script>
@@ -94,7 +92,37 @@
 <!--===============================================================================================-->
 	<script src="{% static 'login/vendor/countdowntime/countdowntime.js' %}"></script>
 <!--===============================================================================================-->
-	<script src="{% static 'login/js/main.js' %}"></script>
+	<script src="{% static 'login/js/main.js' %}"></script>   {% endcomment %}
+	{% comment %} <div class="login-form">
+		<input type="text" id="username1" name="username">
+		<input type="password" id="password1" name="password">
+		<button type="submit" id="login1" name="login">login</button>
+	</div>  {% endcomment %}
+	<script>
+	const login = document.getElementById("login1")
 
+	login.addEventListener("click",function(event) {
+		event.preventDefault();
+		getToken();
+	})
+	function getToken(){
+		const username = document.getElementById("username1").value;
+		const password = document.getElementById("password1").value;
+			console.log(username)
+
+		fetch("/api/token/",{method:'POST',headers:{
+			"Content-Type":"application/json",
+		},
+		body: JSON.stringify({
+			phone_number:username,
+			password:password,
+		}),})
+		.then((response) => response.json())
+		.then((data) => {
+			console.log(data);
+			localStorage.setItem("refresh_token",data.refresh);
+			localStorage.setItem("access_token",data.access);
+		});}
+</script>
 </body>
 </html>

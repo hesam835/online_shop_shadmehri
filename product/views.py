@@ -1,12 +1,17 @@
 from django.shortcuts import render
-
+from accounts.models import User
 # Create your views here.
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Product,Category,Discount,Comment,ProductFeatureValue,ProductFeature,News
-from .serializers import CategorySerializer,ProductSerializer,DiscountSerializer,CommentSerializer,NewsSerializer,ProductFeatureSerializer,ProductFeatureValueSerializer
+from .serializers import CategorySerializer,ProductSerializer,DiscountSerializer,CommentSerializer,NewsSerializer,ProductFeatureSerializer,ProductFeatureValueSerializer,UserSerializer
 from rest_framework import status
+from rest_framework import filters
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+from rest_framework import generics
+
 from django.shortcuts import get_object_or_404
 
 @api_view(['GET'])
@@ -81,6 +86,21 @@ def get_news(request):
     serializer =NewsSerializer(news,many=True)
     return Response({'news':serializer.data})
 
+
+class SearchAPIView(generics.ListCreateAPIView):
+    search_fields = ['name']
+    filter_backends = (filters.SearchFilter,)
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+  
+@api_view(['GET'])
+def get_users(request):
+    users = User.objects.all()
+    serializer =UserSerializer(users,many=True)
+    return Response({'user':serializer.data})
+
+  
+
 def about_us(request):
     return render(request , 'about.html' , context={})
 
@@ -100,7 +120,19 @@ def subcategory(request,slug):
     return render(request , 'subcategory.html' ,context={})
 
 def product_list(request,slug):
-    return render(request , 'product_list.html' ,context={})
+    return render(request,'product_list.html',context={})
+# def product_list(request,slug):
+#     product_list = Product.objects.all()
+#     page = request.GET.get('page', 1)
+
+#     paginator = Paginator(product_list, 10)
+#     try:
+#         users = paginator.page(page)
+#     except PageNotAnInteger:
+#         users = paginator.page(1)
+#     except EmptyPage:
+#         users = paginator.page(paginator.num_pages)
+#     return render(request , 'product_list.html' ,context={'users': users})
 
 def product_detail(request,slug):
     return render(request , 'product_details.html' ,context={})

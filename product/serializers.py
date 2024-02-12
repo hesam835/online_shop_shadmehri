@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from .models import Product,Category,Discount,ProductFeature,Comment,News,ProductFeatureValue
+from accounts.models import User
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -40,3 +41,7 @@ class ProductFeatureValueSerializer(serializers.ModelSerializer):
         model = ProductFeatureValue
         fields ='__all__'
         
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields ='__all__'        

@@ -68,3 +68,18 @@
     .comments ul li {
         margin-bottom: 10px;
     }
+
+
+    #search-icon {
+        cursor: pointer;
+    }
+
+    /* Hide search form by default */
+    #search-form {
+        display: none;
+    }
+
+    /* Show search form when clicked on search icon */
+    #search-form.active {
+        display: block;
+    }

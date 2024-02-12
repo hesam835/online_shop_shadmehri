@@ -26,7 +26,7 @@ class User(AbstractBaseUser,PermissionsMixin):
     phone_number = models.CharField(max_length=11, unique=True, validators=[RegexValidator(r'^\d{11}$', message='Enter a valid 11-digit phone number.')])
     email = models.EmailField(max_length=255, unique=True, validators=[EmailValidator(message='Enter a valid email address.')])
     image = models.ImageField(upload_to=user_image_path)
-    role = models.CharField(max_length=255, choices=ROLE_CHOICES)
+    role = models.CharField(max_length=255, choices=ROLE_CHOICES, default ="Customer")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_deleted = models.BooleanField(default=False)
@@ -92,3 +92,10 @@ class Address(BaseModel):
     user = models.ForeignKey(User, on_delete=models.PROTECT) # this relation is between both customers and staff with Address.
 
 
+class OTPCODE(models.Model):
+    phone_number = models.CharField(max_length=11)
+    code = models.PositiveSmallIntegerField()
+    created = models.DateTimeField(auto_now=True)
+    
+    def __str__(self) -> str:
+        return f"{self.phone_number} - {self.code} - {self.created}"
