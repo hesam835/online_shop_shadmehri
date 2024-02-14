@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import about_us,index,cycle,news,contact,get_details,subcategory,get_details_sub,get_product,product_list,product_detail,get_detail_product,get_discount,get_comment,get_productfeature,get_news,get_users,SearchAPIView
+from .views import about_us,index,cycle,news,contact,get_details,subcategory,get_details_sub,get_product,product_list,product_detail,get_detail_product,get_discount,get_comment,get_productfeature,get_news,get_users,comment,SearchAPIView
 
 urlpatterns = [
     path('api/products/',get_details , name = "get_details"),
@@ -20,5 +20,6 @@ urlpatterns = [
     path('api/comment/<slug:slug>/',get_comment,name="comment_api"),
     path('api/users',get_users,name="get_user"),
     path('api/search',SearchAPIView.as_view(),name="search_api"),
-    
+    path('comment/<slug:slug>/',comment, name = 'comment'),
+
 ]

@@ -27,18 +27,19 @@ class registerview(View):
             request.session['user_registration_info'] ={
             'phone_number':form.cleaned_data['phone'],
             'email':form.cleaned_data['email'],
-            'full_name':form.cleaned_data['full_name'],
+            'first_name':form.cleaned_data['first_name'],
+            'last_name':form.cleaned_data['last_name'],
             'password':form.cleaned_data['password']
             } 
             messages.success(request,'we sent you a code' , 'success')
             return redirect(reverse('verify_code'))
-        return redirect(reverse('login'))
+        return render(request,'register.html',{'form':form})
 
 class UserRegisterVerifyCodeView(View):
     form_class = VerifyCodeForm
     def get(self,request):
         form = self.form_class
-        return render(request , 'staff/verify.html' , {'form':form})
+        return render(request , 'verify.html' , {'form':form})
     
     def post(self,request):
         user_session = request.session['user_registration_info']
@@ -47,7 +48,7 @@ class UserRegisterVerifyCodeView(View):
         if form.is_valid():
             cd = form.cleaned_data 
             if cd['code'] == code_instance.code:
-                User.objects.create_user(user_session['phone_number'],user_session['email'],user_session['full_name'],user_session['password'])
+                User.objects.create_user(user_session['phone_number'],user_session['email'],user_session['first_name'],user_session['last_name'],user_session['password'])
     
                 code_instance.delete()
                 messages.success(request,'you registerd','success')

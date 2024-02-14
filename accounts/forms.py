@@ -42,4 +42,18 @@ class UserRegister(forms.Form):
     last_name = forms.CharField(max_length=50)
     phone = forms.CharField(max_length = 11)
     password = forms.CharField(max_length=10 , widget=forms.PasswordInput)
-    image = forms.ImageField()
+
+    def clean_email(self):
+        email=self.cleaned_data['email']
+        user=User.objects.filter(email=email).exists()
+        if user:
+            raise ValidationError('thos email already exists')
+        return email
+    
+    
+    def clean_phone(self):
+        phone = self.cleaned_data['phone']
+        user=User.objects.filter(phone_number=phone).exists()
+        if user:
+            raise ValidationError('thos phone already exists')
+        return phone

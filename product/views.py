@@ -67,9 +67,10 @@ def get_discount(request):
 
 @api_view(['GET'])
 def get_comment(request,slug):
-    product_parent = Discount.objects.get(slug=slug)
+    product_parent = Comment.objects.get(slug=slug)
     comment = Comment.objects.filter(product_id = product_parent)
     serializer = CommentSerializer(comment,many=True)
+    user_parent =User.objects.get(slug)
     return Response({'comment':serializer.data})
 
 
@@ -121,6 +122,9 @@ def subcategory(request,slug):
 
 def product_list(request,slug):
     return render(request,'product_list.html',context={})
+
+def comment(request,slug):
+    return render(request , 'comment.html' ,context={})
 # def product_list(request,slug):
 #     product_list = Product.objects.all()
 #     page = request.GET.get('page', 1)

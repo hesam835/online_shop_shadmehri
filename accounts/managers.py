@@ -6,7 +6,7 @@ from django.db.models import Manager, QuerySet
 
 class UserManager(BaseUserManager):
 
-    def create_user(self, phone_number, email, first_name, last_name, password, address):
+    def create_user(self, phone_number, email, first_name, last_name, password):
 
         if not phone_number:
             raise ValueError("User must have a phone number")
@@ -26,7 +26,6 @@ class UserManager(BaseUserManager):
         email=self.normalize_email(email),
         first_name=first_name,
         last_name=last_name,
-        address=address
         )
         
         user.set_password(password)
