@@ -25,7 +25,7 @@ class User(AbstractBaseUser,PermissionsMixin):
     last_name = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=11, unique=True, validators=[RegexValidator(r'^\d{11}$', message='Enter a valid 11-digit phone number.')])
     email = models.EmailField(max_length=255, unique=True, validators=[EmailValidator(message='Enter a valid email address.')])
-    image = models.ImageField(upload_to=user_image_path)
+    image = models.ImageField(upload_to=user_image_path,null=True)
     role = models.CharField(max_length=255, choices=ROLE_CHOICES, default ="Customer")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

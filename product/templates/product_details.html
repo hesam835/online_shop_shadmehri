@@ -222,18 +222,13 @@
                             <div class="product-info">
                                 <div><strong>Description:</strong> ${product.product.description}</div>
                                 <div><strong>Price:</strong> ${product.product.price}</div>
-                                <div><strong>Is Available: </strong>${product.product.is_available}</div>
                                 <div><strong>Inventory quantity:</strong> ${product.product.inventory_quantity}</div>
-                                <div><strong>Discount:</strong> ${product.product.discount ? product.product.discount : '-'}</div>
-                                <div>${product.comments.text}</div>
+                                <div><strong>Discount:</strong> ${product.discounts.value ? product.discounts.value : '-'}</div>
                             </div>
                             <a class="read_more" href="/#">Add to Cart</a>
                             <div>
                               <a class="read_more" href="/comment/${product.product.slug}">comment</a>>
-                             <ul>
-                                 ${product.comments.map(comment => `<li><strong></stong> ${comment.user}:   ${comment.text}</li>`).join('')}
-                                 
-                             </ul>
+
                          </div>
                         `;
                         colDiv2.appendChild(titlePage);

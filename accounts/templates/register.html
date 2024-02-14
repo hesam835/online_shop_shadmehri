@@ -37,6 +37,11 @@
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
    </head>
    <body>
+      {% if messages %}
+         {% for msg in messages %}
+            <p class="alert alert-{{msg.tags}}">{{msg}}</p>
+         {% endfor %}
+      {% endif %}
     <!-- header section start -->
     <div class="header_section header_bg">
        <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -140,14 +145,25 @@
                             <div class="text-center">
                             <h4 class="text-dark mb-4">Create an Account!</h4>
                             </div>
-                            <form class="user" action="{% url 'register' %}" method="post" >
+                            <form class="user" action="{% url 'user_register_api' %}" method="post" >
                             <div class="row mb-3">{% csrf_token %}
-                                {% render_field form.phone class="form-control form-control-user" placeholder="phone" %}
-                                {% render_field form.email class="form-control form-control-user" placeholder="email" %}
-                                {% render_field form.first_name class="form-control form-control-user" placeholder="first anme" %}
-                                {% render_field form.last_name class="form-control form-control-user" placeholder="last anme" %}
-                                {% render_field form.password class="form-control form-control-user" placeholder="password" %}
-
+                              <div class="row">
+                                 <div class="col-md-12">
+                                     <input class="form-control form-control-user" placeholder="Firstname" type="text" name="first_name" required> 
+                                  </div>
+                                  <div class="col-md-12">
+                                     <input class="form-control form-control-user" placeholder="Lastname" type="text" name="last_name" required> 
+                                  </div>
+                                  <div class="col-md-12">
+                                     <input class="form-control form-control-user" placeholder="Phone number" type="text" name="phone_number" maxlength="11" required> 
+                                  </div>
+                                 <div class="col-md-12">
+                                    <input class="form-control form-control-user" placeholder="Email" type="email" name="email" required> 
+                                 </div>
+                                 <div class="col-md-12">
+                                    <input class="form-control form-control-user" placeholder="Password" type="password" name="password" required>                          
+                                 </div>
+                                 <div class="col-md-12">
                             </div>
                             <button
                                 class="btn btn-primary d-block btn-user w-100"

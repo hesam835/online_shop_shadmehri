@@ -67,10 +67,9 @@ def get_discount(request):
 
 @api_view(['GET'])
 def get_comment(request,slug):
-    product_parent = Comment.objects.get(slug=slug)
+    product_parent = Product.objects.get(slug=slug)
     comment = Comment.objects.filter(product_id = product_parent)
     serializer = CommentSerializer(comment,many=True)
-    user_parent =User.objects.get(slug)
     return Response({'comment':serializer.data})
 
 

@@ -131,10 +131,12 @@
                 </div>
              </div>
             <div style="padding-bottom:100px">
-                <form class="form-control form-control-user" style="padding-left:500px;padding-top:100px;padding-buttom:100px" action="" method="post">
+                <form class="form-control form-control-user" style="padding-left:500px;padding-top:100px;padding-buttom:100px" action="{% url 'verify_code_api' %}" method="post">
                     {% csrf_token %}
-                    {{form.as_p}}
-                    <button class="btn btn-primary" type="submit">send</button>
+                    <div class="col-md-12">
+                     <input class="contactus" placeholder="Code" type="type" name="code" required> 
+                     </div>
+                    <button class="btn btn-primary">send</button>
                 </form>
             </div>
             <script src="{% static 'product/js/jquery.min.js' %}"></script>

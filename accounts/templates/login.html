@@ -28,7 +28,11 @@
 <!--===============================================================================================-->
 </head>
 <body>
-	
+	{% if messages %}
+	{% for msg in messages %}
+	   <p class="alert alert-{{msg.tags}}">{{msg}}</p>
+	{% endfor %}
+ 	{% endif %}
 	<div class="limiter">
 		<div class="container-login100">
 			<div class="wrap-login100">

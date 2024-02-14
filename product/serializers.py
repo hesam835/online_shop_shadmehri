@@ -7,25 +7,33 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields ='__all__'
-        
+     
+class DiscountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Discount
+        fields ='__all__'
+             
+   
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields ='__all__'
         
         
-class DiscountSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Discount
-        fields ='__all__'
-        
+
 class ProductFeatureSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductFeature
         fields ='__all__'
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields ='__all__'        
+
         
 class CommentSerializer(serializers.ModelSerializer):
+    user_id=UserSerializer()
     class Meta:
         model = Comment
         fields ='__all__'
@@ -41,7 +49,3 @@ class ProductFeatureValueSerializer(serializers.ModelSerializer):
         model = ProductFeatureValue
         fields ='__all__'
         
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields ='__all__'        

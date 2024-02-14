@@ -36,6 +36,11 @@
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
    </head>
    <body>
+      {% if messages %}
+      {% for msg in messages %}
+         <p class="alert alert-{{msg.tags}}">{{msg}}</p>
+      {% endfor %}
+      {% endif %}
       <!-- header section start -->
       <div class="header_section header_bg">
          <nav class="navbar navbar-expand-lg navbar-light bg-light">
