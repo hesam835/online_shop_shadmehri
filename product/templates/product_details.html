@@ -223,8 +223,11 @@
                                 <div><strong>Description:</strong> ${product.product.description}</div>
                                 <div><strong>Price:</strong> ${product.product.price}</div>
                                 <div><strong>Inventory quantity:</strong> ${product.product.inventory_quantity}</div>
-                                <div><strong>Discount:</strong> ${product.discounts.value ? product.discounts.value : '-'}</div>
-                            </div>
+                                <div><strong>Discount:</strong> ${product.discounts.value ? product.discounts.value : '-'}%</div>
+                                <div><strong>price:</strong> ${product.product.price}$</div>
+                                <div><strong>brand:</strong> ${product.product.brand}</div>
+
+                              </div>
                             <a class="read_more" href="/#">Add to Cart</a>
                             <div>
                               <a class="read_more" href="/comment/${product.product.slug}">comment</a>>
