@@ -89,7 +89,7 @@
          .then(data => {
              var productList = $('#list-category');
              data.category.forEach(function(product) {
-                 productList.append('<div class="cycle_section_2 layout_padding"><div class="row"><div class="col-md-6"><div class="box_main"><h6 class="number_text">01</h6><div class="image_2"><img class="product-image" src='+product.image+'></div></div></div><div class="col-md-6"><h1 class="cycles_text">'+product.name+'</h1><p class="lorem_text">'+product.description+'</p><div class="btn_main"><div class="buy_bt"><a href="/subcategory/' + product.slug + '/">product list</a></div><h4 class="price_text"> <span style=" color: #f7c17b">$</span> <span style=" color: #325662">200</span></h4></div></div></div></div>');});})
+                 productList.append('<div class="cycle_section_2 layout_padding"><div class="row"><div class="col-md-6"><div class="box_main"><h6 class="number_text">01</h6><div class="image_2"><img class="product-image" src='+product.image+'></div></div></div><div class="col-md-6"><h1 class="cycles_text">'+product.name+'</h1><p class="lorem_text">'+product.description+'</p><div class="btn_main"><div class="buy_bt"><a href="/subcategory/' + product.slug + '/">product list</a></div><h4 class="price_text"> <span style=" color: #f7c17b">$</span> <span style=" color: #325662"></span></h4></div></div></div></div>');});})
                  .catch(error => console.error('Error:', error));
       </script>
    </body>

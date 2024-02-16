@@ -4,7 +4,7 @@
 {% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | Bicycle shop management panel {% endblock %}
 
 {% block branding %}
-<div id="site-name"><a href="{% url 'admin:index' %}"><img src="{% static 'admin/images/logo.png' %}"</a></div>
+<div id="site-name"><a href="{% url 'admin:index' %}"><img src="{% static 'product/images/logo.png' %}"> Bicycle shop management panel </a></div>
 {% if user.is_anonymous %}
   {% include "admin/color_theme_toggle.html" %}
 {% endif %}
