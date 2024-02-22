@@ -146,7 +146,8 @@
                             <h4 class="text-dark mb-4">Create an Account!</h4>
                             </div>
                             <form class="user" action="{% url 'user_register_api' %}" method="post" >
-                            <div class="row mb-3">{% csrf_token %}
+                            <div class="row mb-3">
+                            <div class="row mb-3">
                               <div class="row">
                                  <div class="col-md-12">
                                      <input class="form-control form-control-user" placeholder="Firstname" type="text" name="first_name" required> 

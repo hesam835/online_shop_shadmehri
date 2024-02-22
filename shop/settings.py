@@ -164,3 +164,11 @@ SIMPLE_JWT = {
 REDIS_HOST = 'localhost' # Replace with your Redis server host
 REDIS_PORT = 6379 # Replace with your Redis server port
 REDIS_DB = 0
+# cache
+CACHES = {
+"default": {
+"BACKEND": "django.core.cache.backends.redis.RedisCache",
+"LOCATION": "redis://127.0.0.1:6379",
+}
+}
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
