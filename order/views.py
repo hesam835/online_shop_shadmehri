@@ -7,19 +7,36 @@ from .models import Order,OrderItem,Coupon
 from .serializers import CartItemSerializer,CartSerializer,CouponSerializer,OrderSerializer,OrderItemSerializer
 from django.views import View
 from rest_framework.response import Response
-
+from django.http import JsonResponse
+from django.core.serializers import serialize
+from django.db.models import QuerySet
+import json
 
 def cart(request):
-    cart=CartAdd(request)
-    return render(request,'cart.html',context={'cart':cart})
+    return render(request,'cart.html',context={})
 
 
 def detail_cart(request):
     return render(request,'detail_cart.html',context={})
 
     
-    
-    
+class ShowCart(APIView):
+    def get(self, request):
+        cart = CartAdd(request)
+        cart_items = list(cart)
+        total_price = cart.get_total_price()
+        for item in cart_items:
+            product = serialize('json', [item['product']], fields=('name', 'price', 'slug'))
+            item['product'] = {
+                'fields': json.loads(product)[0]['fields'],
+                'slug': item['product'].slug,
+            }
+        data = {
+            'cart': cart_items,
+            'total_price': total_price
+        }
+        
+        return Response(data)
     
 # class CartAdd:
 #     def __init__(self,request) -> None:
