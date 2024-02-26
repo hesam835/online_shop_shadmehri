@@ -35,6 +35,9 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Password must be at least 6 characters long")
         return value
         
+class UserLoginSerializer(serializers.Serializer):
+    phone_number = serializers.CharField()
+    password = serializers.CharField()
         
 # class UserLoginSerializer(serializers.ModelSerializer):
 #     class Meta:

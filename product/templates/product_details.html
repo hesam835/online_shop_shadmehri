@@ -195,13 +195,7 @@
          </script>
          <script>
             function fetchProductDetail() {
-                fetch('/api' + window.location.pathname,{
-                  method:"GET",
-                  headers:{
-                     "Content-Type":"application/json",
-                     "Authorization":`Bearer ${localStorage.getItem("access_token")}`
-                  }
-                 })
+                fetch('/api' + window.location.pathname)
                 .then(response => response.json())
                     .then(product => {
                         const productDetailContainer = document.getElementById('productDetailContainer');

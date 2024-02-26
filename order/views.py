@@ -1,22 +1,25 @@
 from django.shortcuts import render,get_list_or_404,redirect
 from rest_framework.decorators import api_view
 from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from product.models import Product
 from .models import Order,OrderItem,Coupon
-from .serializers import CartItemSerializer,CartSerializer,CouponSerializer,OrderSerializer,OrderItemSerializer
+from .serializers import CartItemSerializer,CartSerializer,CouponSerializer,OrderSerializer,OrderItemSerializer,AddressSerializer
 from django.views import View
 from rest_framework.response import Response
 from django.http import JsonResponse
 from django.core.serializers import serialize
 from django.db.models import QuerySet
+from rest_framework import status
+
 import json
 
 def cart(request):
     return render(request,'cart.html',context={})
 
 
-def detail_cart(request):
+def detail_cart(request,order_id):
     return render(request,'detail_cart.html',context={})
 
     
@@ -104,6 +107,10 @@ class CartAdd:
         if product_id in self.cart:
             del self.cart[product_id]
             self.save()
+            
+    def clear(self):
+        del self.session[CART_SESSION_ID]
+        self.save()
         
         
 class Cart_Add(APIView):
@@ -135,16 +142,24 @@ class OrderDetail(APIView):
         serializer=OrderSerializer(queryset)
         return Response({'queryset':serializer.data})
 
-class OrderCreate(APIView):
+class OrderCreate(View):
     def get(self,request):
         cart=CartAdd(request)
-        order=Order.objects.create()
+        total_price=cart.get_total_price()
+        order=Order.objects.create(user=request.user,total_price=total_price)
         for item in cart:
-            OrderItem.objects.create(order=order,product=item['product'],price=item['price'],quantity=item['quantity'])
+            OrderItem.objects.create(order=order,product=item['product'],quantity=item['quantity'])
+        cart.clear()
+        return redirect("order_detail",order.id)
 
-        return redirect(order.id)
 
-
+class AddressAPIView(APIView):
+    def post(self, request, format=None):
+        serializer = AddressSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # @api_view(['POST'])

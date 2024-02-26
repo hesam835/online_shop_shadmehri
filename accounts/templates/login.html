@@ -131,7 +131,7 @@
 	<div class="limiter">
 		<div class="container-login100">
 			<div class="wrap-login100">
-				<form class="login100-form validate-form">
+				<form class="login100-form validate-form" id="request">
 					<span class="login100-form-title p-b-26">
 						Welcome
 					</span>
@@ -228,7 +228,32 @@
 	   $("#main").click(function(){
 		   $("#navbarSupportedContent").toggleClass("nav-normal")
 	   })
-	const login = document.getElementById("login1")
+	   document.getElementById("request").addEventListener("submit", function(event) {
+		event.preventDefault();
+		var username = document.getElementById("username1").value;
+		var password = document.getElementById("password1").value;
+
+		fetch("/accounts/api/login/", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({
+				phone_number: username,
+				password: password
+			})
+		})
+		.then(response => response.json())
+		.then(data => {
+			console.log(data);
+			alert("Login successful! Refresh token: " + data.refresh + ", Access token: " + data.access);
+		})
+		.catch(error => {
+			console.error("Error:", error);
+			alert("Login failed. Please check your username and password.");
+		});
+	});
+	{% comment %} const login = document.getElementById("login1")
 
 	login.addEventListener("click",function(event) {
 		event.preventDefault();
@@ -251,7 +276,7 @@
 			console.log(data);
 			localStorage.setItem("refresh_token",data.refresh);
 			localStorage.setItem("access_token",data.access);
-		});}
+		});} {% endcomment %}
 </script>
 </body>
 </html>

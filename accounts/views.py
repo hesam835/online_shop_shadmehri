@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from .serializers import UserRegisterSerializer, OtpCodeSerializer
+from .serializers import UserRegisterSerializer, OtpCodeSerializer , UserLoginSerializer
 from .models import User
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import permissions
 import random
 from utils import send_otp_code
 from django.contrib import messages
@@ -13,6 +14,8 @@ from django.urls import reverse
 from rest_framework.permissions import AllowAny
 from django.conf import settings
 import redis
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.http import JsonResponse
 
 # redis
 redis_client = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB)
@@ -88,4 +91,33 @@ class VerifyCodeAPIView(APIView):
                     return redirect("login")
             messages.error(request, "Code is not correct", "danger")
             return redirect("verify_code")
-        return redirect("login")
+        return  redirect("login")
+    
+    
+class UserLoginAPIView(APIView):
+    permission_classes = []
+
+    def post(self, request):
+        serializer = UserLoginSerializer(data=request.data)
+        if serializer.is_valid():
+            phone_number = serializer.validated_data["phone_number"]
+            password = serializer.validated_data["password"]
+
+            user = authenticate(phone_number=phone_number, password=password)
+
+            if user is not None:
+                refresh = RefreshToken.for_user(user)
+                return Response({
+                    'refresh': str(refresh),
+                    'access': str(refresh.access_token),
+                })
+            else:
+                return Response({'error': 'Invalid username/password'}, status=400)
+
+        return Response(serializer.errors, status=400)
+    
+def customer_panel(request):
+    return render(request,'customer_panel.html',context={})
+
+def profile(request):
+    return render(request,'profile.html',context={})
