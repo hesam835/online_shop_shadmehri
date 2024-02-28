@@ -3,6 +3,7 @@ from .models import User
 from django.contrib import messages
 from django.shortcuts import redirect
 import re
+from djoser.serializers import UserCreateSerializer, UserSerializer
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(required=True)
@@ -56,8 +57,21 @@ class UserLoginSerializer(serializers.Serializer):
 #         if len(value) < 6:
 #             raise serializers.ValidationError("Password must be at least 6 characters long")
 #         return value
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+class TokenRefreshSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
 
 
 class OtpCodeSerializer(serializers.Serializer):
     code = serializers.CharField()
         
+        
+from djoser.serializers import UserSerializer as BaseUserSerializer, UserCreateSerializer as BaseUserCreateSerializer
+from rest_framework.serializers import ModelSerializer
+
+class UserCreateSerializer(BaseUserCreateSerializer):
+    class Meta(BaseUserCreateSerializer.Meta):
+        fields = ['id', 'phone_number', 'email', 'password','first_name','last_name']

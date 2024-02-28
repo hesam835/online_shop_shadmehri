@@ -9,12 +9,15 @@ from .serializers import CategorySerializer,ProductSerializer,DiscountSerializer
 from rest_framework import status
 from rest_framework import filters
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 from rest_framework import generics
 
 from django.shortcuts import get_object_or_404
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_details(request):
     category = Category.objects.filter(is_sub=False)
     serializer = CategorySerializer(category, many=True)

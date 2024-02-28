@@ -66,7 +66,7 @@
                 <p class="text-muted mb-0" id="postal-detail"><span class="fw-bold me-4">province:</span> ?</p>
               </div>
               <div class="d-flex justify-content-between mb-5">
-                <form class="user" action="{% url 'user_register_api' %}" method="post" id="myForm">
+                <form class="user" id="myForm" action="/api/address/">
                   <div class="row mb-3">
                       <div class="col-md-12">
                           <input class="form-control form-control-user mb-3" placeholder="Province" type="text" name="province" required id="province"> 
@@ -81,14 +81,17 @@
                           <div id="detailError" style="color: red;"></div>
                       </div>
                       <div class="col-md-12">
-                          <input class="form-control form-control-user mb-3" placeholder="Postal code" type="email" name="post_code" required id="post_code"> 
+                          <input class="form-control form-control-user mb-3" placeholder="Postal code" name="post_code" required id="post_code"> 
                           <div id="postalError" style="color: red;"></div>
                       </div>
+                      <button
+                      class="btn btn-primary d-block btn-user w-100"
+                      type="submit"
+                      onclick="ValidateForm(event)">
+                      Save address
+                  </button>
                   </div>
               </form>
-              </div>
-              <div class="d-flex justify-content-between mb-5">
-                <a href="#" class="btn btn-success btn-lg" id="payButton">Save Adress</a>
               </div>
             </div>
             <div class="card-footer border-0 px-4 py-5"
@@ -163,68 +166,34 @@
       }
       return true;
   }
+  function ValidateForm(event) {
+    event.preventDefault(); // Prevent default form submission behavior
+    
+    // Serialize form data into a JSON object
+    const formData = {
+        province: document.getElementById('province').value,
+        city: document.getElementById('city').value,
+        detail: document.getElementById('detail').value,
+        post_code: document.getElementById('post_code').value,
+    };
 
-  function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
-    document.getElementById('payButton').addEventListener('click', function(event) {
-      // Prevent the default form submission behavior
-      event.preventDefault();
-
-      // Get the address data from the form
-      var province = document.getElementById('province').value;
-      var city = document.getElementById('city').value;
-      var detail = document.getElementById('detail').value;
-      var post_code = document.getElementById('post_code').value;
-
-      // Check if at least one field is filled in
-      if (province === '' && city === '' && detail === '' && post_code === '') {
-          // If no fields are filled in, display an error message and return
-          alert('Please fill in at least one field.');
-          return;
-      }
-
-      // Make a POST request to the Django API endpoint
-      fetch('/api/address/', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-              'X-CSRFToken': getCookie('csrftoken') // Include the CSRF token
-          },
-          body: JSON.stringify({
-              province: province,
-              city: city,
-              detail_address: detail,
-              postal_code: post_code
-          })
-      })
-      .then(response => {
-          if (response.ok) {
-              // If the POST request is successful, reload the page
-              window.location.reload();
-          } else {
-              // If there is an error, display an error message
-              console.error('Error:', response.statusText);
-              alert('An error occurred while saving the address.');
-          }
-      })
-      .catch(error => {
-          console.error('Error:', error);
-          alert('An error occurred while saving the address.');
-      });
+    // Send a POST request to the API endpoint with the JSON data
+    fetch('/order/api/address', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Handle successful response
+        console.log(data);
+    })
+    .catch(error => {
+        // Handle error
+        console.error('Error:', error);
     });
+}
   </script>
 </body>

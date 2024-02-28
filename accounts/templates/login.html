@@ -57,6 +57,7 @@
 			<link rel="stylesheet" type="text/css" href="{% static 'login/css/util.css' %}">
 			<link rel="stylesheet" type="text/css" href="{% static 'login/css/main.css' %}">
 		<!--===============================================================================================-->
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	</head>
    <body>
       <!-- header section start -->
@@ -131,7 +132,7 @@
 	<div class="limiter">
 		<div class="container-login100">
 			<div class="wrap-login100">
-				<form class="login100-form validate-form" id="request">
+				<form class="login100-form validate-form" id="login-form">
 					<span class="login100-form-title p-b-26">
 						Welcome
 					</span>
@@ -140,14 +141,14 @@
 					</span>
 
 					<div class="wrap-input100 validate-input" data-validate = "Valid email is: a@b.c">
-						<input class="input100" type="text" id="username1" name="username">
+						<input class="input100" type="text" id="phone_number" name="phone_number">
 					</div>
 
 					<div class="wrap-input100 validate-input" data-validate="Enter password">
 						<span class="btn-show-pass">
 							<i class="zmdi zmdi-eye"></i>
 						</span>
-						<input class="input100" type="password" id="password1" name="password">
+						<input class="input100" type="password" id="password" name="password">
 					</div>
 
 					<div class="container-login100-form-btn">
@@ -228,55 +229,45 @@
 	   $("#main").click(function(){
 		   $("#navbarSupportedContent").toggleClass("nav-normal")
 	   })
-	   document.getElementById("request").addEventListener("submit", function(event) {
-		event.preventDefault();
-		var username = document.getElementById("username1").value;
-		var password = document.getElementById("password1").value;
-
-		fetch("/accounts/api/login/", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify({
-				phone_number: username,
-				password: password
-			})
-		})
-		.then(response => response.json())
-		.then(data => {
-			console.log(data);
-			alert("Login successful! Refresh token: " + data.refresh + ", Access token: " + data.access);
-		})
-		.catch(error => {
-			console.error("Error:", error);
-			alert("Login failed. Please check your username and password.");
-		});
-	});
-	{% comment %} const login = document.getElementById("login1")
-
-	login.addEventListener("click",function(event) {
-		event.preventDefault();
-		getToken();
-	})
-	function getToken(){
-		const username = document.getElementById("username1").value;
-		const password = document.getElementById("password1").value;
-			console.log(username)
-
-		fetch("/api/token/",{method:'POST',headers:{
-			"Content-Type":"application/json",
-		},
-		body: JSON.stringify({
-			phone_number:username,
-			password:password,
-		}),})
-		.then((response) => response.json())
-		.then((data) => {
-			console.log(data);
-			localStorage.setItem("refresh_token",data.refresh);
-			localStorage.setItem("access_token",data.access);
-		});} {% endcomment %}
-</script>
+	   async function login(event) {
+		event.preventDefault(); // Prevent the default form submission behavior
+	
+		const phone_number = document.getElementById('phone_number').value;
+		const password = document.getElementById('password').value;
+	
+		// Validate phone number
+		if (!phone_number.match(/^\d{11}$/)) {
+			alert('Please enter a valid 11-digit phone number.');
+			return;
+		}
+	
+	
+		try {
+			const response = await fetch('/auth/token/login/', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ phone_number, password }),
+			});
+	
+			if (response.ok) {
+				const responseData = await response.json();
+				const authToken = responseData.auth_token;  // Change access to auth_token
+				localStorage.setItem('auth_token', authToken);  // Change access_token to auth_token
+				window.location.href = 'loginn';
+			} else {
+				const errorData = await response.json();
+				const errorDetail = errorData.detail;
+				alert(errorDetail);
+			}
+		} catch (error) {
+			console.error('Error:', error);
+			alert('An error occurred while processing your request.');
+		}
+	}
+	
+	document.getElementById('login-form').addEventListener('submit', login);
+	</script>
 </body>
 </html>

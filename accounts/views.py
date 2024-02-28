@@ -16,6 +16,9 @@ from django.conf import settings
 import redis
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.http import JsonResponse
+from .serializers import LoginSerializer, TokenRefreshSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework.decorators import api_view, permission_classes
 
 # redis
 redis_client = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB)
@@ -93,31 +96,57 @@ class VerifyCodeAPIView(APIView):
             return redirect("verify_code")
         return  redirect("login")
     
+# class CustomTokenObtainPairView(TokenObtainPairView):
+#     serializer_class = LoginSerializer
+
+#     def post(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         user = serializer.data['user'] # This line needs to be changed
+#         refresh = RefreshToken.for_user(user)
+#         return Response({
+#             'refresh': str(refresh),
+#             'access': str(refresh.access_token),
+#         })
+
+# @api_view(['POST'])
+# @permission_classes([AllowAny])
+# def token_refresh(request):
+#     serializer = TokenRefreshSerializer(data=request.data)
+#     serializer.is_valid(raise_exception=True)
+#     refresh = RefreshToken(serializer.validated_data['refresh'])
+#     return Response({
+#         'access': str(refresh.access_token),
+#     })
     
-class UserLoginAPIView(APIView):
-    permission_classes = []
+# class UserLoginAPIView(APIView):
+#     permission_classes = []
 
-    def post(self, request):
-        serializer = UserLoginSerializer(data=request.data)
-        if serializer.is_valid():
-            phone_number = serializer.validated_data["phone_number"]
-            password = serializer.validated_data["password"]
+#     def post(self, request):-
+#         serializer = UserLoginSerializer(data=request.data)
+#         if serializer.is_valid():
+#             phone_number = serializer.validated_data["phone_number"]
+#             password = serializer.validated_data["password"]
 
-            user = authenticate(phone_number=phone_number, password=password)
+#             user = authenticate(phone_number=phone_number, password=password)
 
-            if user is not None:
-                refresh = RefreshToken.for_user(user)
-                return Response({
-                    'refresh': str(refresh),
-                    'access': str(refresh.access_token),
-                })
-            else:
-                return Response({'error': 'Invalid username/password'}, status=400)
+#             if user is not None:
+#                 refresh = RefreshToken.for_user(user)
+#                 return Response({
+#                     'refresh': str(refresh),
+#                     'access': str(refresh.access_token),
+#                 })
+#             else:
+#                 return Response({'error': 'Invalid username/password'}, status=400)
 
-        return Response(serializer.errors, status=400)
+#         return Response(serializer.errors, status=400)
     
 def customer_panel(request):
     return render(request,'customer_panel.html',context={})
 
 def profile(request):
     return render(request,'profile.html',context={})
+
+"===================================================="
+
+

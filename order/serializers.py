@@ -39,10 +39,14 @@ class CouponSerializer(serializers.ModelSerializer):
         
 
 class OrderSerializer(serializers.ModelSerializer):
-    user=UserSerializer()
+
+    user=UserSerializer(read_only=True)
     class Meta:
         model=Order
         fields='__all__'
+        
+    def create(self, validated_data):
+        user = self.context['request'].user
         
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:

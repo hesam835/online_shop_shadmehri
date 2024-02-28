@@ -32,7 +32,8 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'rest_framework',
-    'rest_framework_simplejwt',
+    'djoser',
+    'rest_framework.authtoken',
     'widget_tweaks',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'accounts',
     'core',
     'order',
@@ -140,27 +142,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = "accounts.User"
 
 AUTHENTICATION_BACKENDS = [
-    "accounts.authenticate.PhoneBackend",
-    "django.contrib.auth.backends.ModelBackend",
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-    #    'rest_framework.permissions.IsAuthenticated',
-    ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ]
-}
-from datetime import timedelta
 
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),  # Example token lifetime
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'AUTH_HEADER_TYPES': ('Bearer',),
-    'USER_ID_FIELD': 'id',
-    'USER_ID_CLAIM': 'user_id',
-}
 
 REDIS_HOST = 'localhost' # Replace with your Redis server host
 REDIS_PORT = 6379 # Replace with your Redis server port
@@ -173,3 +158,26 @@ CACHES = {
 }
 }
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+
+from datetime import timedelta
+SIMPLE_JWT = {
+'AUTH_HEADER_TYPES': ('JWT',),
+'ACCESS_TOKEN_LIFETIME': timedelta(days=3)
+}
+DJOSER = {
+'SERIALIZERS': {
+'user_create': 'accounts.serializers.UserCreateSerializer'
+},
+}
+
+
+REST_FRAMEWORK = {
+'COERCE_DECIMAL_TO_STRING': False,
+'DEFAULT_AUTHENTICATION_CLASSES': (
+'rest_framework_simplejwt.authentication.JWTAuthentication',
+),
+}
+
+MERCHANT = "00000000-0000-0000-0000-000000000000"
+
+SANDBOX = True
