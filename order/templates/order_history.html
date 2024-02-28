@@ -51,12 +51,6 @@
       </thead>
       <tbody id="cart-items">
       </tbody>
-      <tr>
-          <td>Total</td>
-          <td colspan="1"></td>
-          <td id="total-price"></td>
-          <td colspan="2"></td>
-      <tr>
       </table>
     </div>
   </body>
@@ -65,12 +59,13 @@
       fetch('/order/api/order_history')
           .then(response => response.json())
           .then(data => {
-              data.forEach(item => {
+              data.queryset.forEach(item => {
                   let row = document.createElement('tr');
-                  row.innerHTML = '<td>' + item.queryset.user.first_name+' '+item.queryset.user.last_name + '</td>' +
-                                  '<td>' + item.queryset.order_id + '</td>' +
-                                  '<td>' + item.queryset.total_price + '</td>' +
-                                  '<td>' + item.queryset.is_paid + '</td>';
+                  row.innerHTML = '<td>' + item.user.first_name+' '+item.user.last_name + '</td>' +
+                                  '<td>' + item.order_id + '</td>' +
+                                  '<td>' + item.total_price + '</td>' +
+                                  '<td>' + item.is_paid + '</td>'+
+                                  '<td><a href="create_checkout/" class="btn btn-primary">Checkout</a></td>' ;
                   document.getElementById('cart-items').appendChild(row);
               });
           });

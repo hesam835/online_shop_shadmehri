@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from .serializers import UserRegisterSerializer, OtpCodeSerializer , UserLoginSerializer
-from .models import User
+from .serializers import UserRegisterSerializer, OtpCodeSerializer , UserLoginSerializer,ProfileSerializer,AddressSerializer
+from .models import User,Address
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
@@ -147,6 +147,15 @@ def customer_panel(request):
 def profile(request):
     return render(request,'profile.html',context={})
 
-"===================================================="
+class ProfileAPiVIew(APIView):
+    def get(self,request):
+        queryset=User.objects.get(id=request.user.id)
+        serializer=ProfileSerializer(queryset)
+        return Response({'queryset': serializer.data})
 
+class AdressApiView(APIView):
+    def get(self,request):
+        queryset=Address.objects.filter(user=request.user)
+        serializer=AddressSerializer(queryset,many=True)
+        return Response({'queryset': serializer.data})
 
