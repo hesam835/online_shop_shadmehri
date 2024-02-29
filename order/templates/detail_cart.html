@@ -87,7 +87,7 @@
                       <button
                       class="btn btn-primary d-block btn-user w-100"
                       type="submit"
-                      onclick="ValidateForm(event)">
+                      onclick="validateForm()">
                       Save address
                   </button>
                   </div>
@@ -165,10 +165,7 @@
           return false;
       }
       return true;
-  }
-  function ValidateForm(event) {
-    event.preventDefault(); // Prevent default form submission behavior
-    
+
     // Serialize form data into a JSON object
     const formData = {
         province: document.getElementById('province').value,
@@ -178,7 +175,7 @@
     };
 
     // Send a POST request to the API endpoint with the JSON data
-    fetch('/order/api/address', {
+    fetch('/order/api/address/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -194,6 +191,6 @@
         // Handle error
         console.error('Error:', error);
     });
-}
+  }
   </script>
 </body>

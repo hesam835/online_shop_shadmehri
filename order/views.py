@@ -125,6 +125,7 @@ class OrderDetail(APIView):
         serializer=OrderSerializer(queryset)
         return Response({'queryset':serializer.data})
 
+
 class OrderCreate(APIView):
     def get(self,request):
         print("==============================")
