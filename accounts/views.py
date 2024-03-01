@@ -47,8 +47,6 @@ class UserRegisterAPIView(APIView):
                 "email":serializer.validated_data["email"],
                 "password":serializer.validated_data["password"]
             }
-            print("************************************************************")
-            print(request.session["user_profile_info"] )
             messages.success(request, f"we sent {hidden_phone_number} a code", 'success')
             return redirect('verify_code')
         error_messages = serializer.errors
@@ -147,15 +145,17 @@ def customer_panel(request):
 def profile(request):
     return render(request,'profile.html',context={})
 
+def edit_profile(request):
+    return render(request , 'edit_profile.html' , context={})
+
 class ProfileAPiVIew(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self,request):
         queryset=User.objects.get(id=request.user.id)
         serializer=ProfileSerializer(queryset)
         return Response({'queryset': serializer.data})
 
-class AdressApiView(APIView):
-    def get(self,request):
-        queryset=Address.objects.filter(user=request.user)
-        serializer=AddressSerializer(queryset,many=True)
-        return Response({'queryset': serializer.data})
+
+    
+   
 

@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from product.models import Product
 from .models import Order,OrderItem,Coupon
+from accounts.models import Address
 from .serializers import CartItemSerializer,CartSerializer,CouponSerializer,OrderSerializer,OrderItemSerializer,AddressSerializer
 from django.views import View
 from django.conf import settings
@@ -120,6 +121,7 @@ class CartRemoveApi(APIView):
 
 
 class OrderDetail(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self,request,order_id):
         queryset=Order.objects.get(id=order_id)
         serializer=OrderSerializer(queryset)
@@ -127,6 +129,7 @@ class OrderDetail(APIView):
 
 
 class OrderCreate(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self,request):
         print("==============================")
         print(request.user)
@@ -141,14 +144,21 @@ class OrderCreate(APIView):
 
 class AddressAPIView(APIView):
     def post(self, request, format=None):
-        serializer = AddressSerializer(data=request.data)
+        serializer = AddressSerializer(data=request.POST)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class ShowAddressApi(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self,request):
+        queryset=Address.objects.filter(user=request.user)
+        serializer=AddressSerializer(queryset,many=True)
+        return Response({'queryset':serializer.data})        
 
 class OrderHistoryApi(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         print(request.user.id)
         print("==========================================")

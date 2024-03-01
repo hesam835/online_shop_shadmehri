@@ -66,32 +66,33 @@
                 <p class="text-muted mb-0" id="postal-detail"><span class="fw-bold me-4">province:</span> ?</p>
               </div>
               <div class="d-flex justify-content-between mb-5">
-                <form class="user" id="myForm" action="/api/address/">
+                <form class="user" id="myForm" action="{% url 'address_api' %}" method="post">
+                  {% csrf_token %}
                   <div class="row mb-3">
                       <div class="col-md-12">
-                          <input class="form-control form-control-user mb-3" placeholder="Province" type="text" name="province" required id="province"> 
+                          <input class="form-control form-control-user mb-3" placeholder="Province" type="text" name="province" id="province"> 
                           <div id="provinceError" style="color: red;"></div>
                       </div>
                       <div class="col-md-12">
-                          <input class="form-control form-control-user mb-3" placeholder="City" type="text" name="city" required id="city"> 
+                          <input class="form-control form-control-user mb-3" placeholder="City" type="text" name="city" id="city"> 
                           <div id="cityError" style="color: red;"></div>
                       </div>
                       <div class="col-md-12">
-                          <input class="form-control form-control-user mb-3" placeholder="Detai adress" type="text" name="detail" required id="detail"> 
+                          <input class="form-control form-control-user mb-3" placeholder="Detai adress" type="text" name="detail" id="detail"> 
                           <div id="detailError" style="color: red;"></div>
                       </div>
                       <div class="col-md-12">
-                          <input class="form-control form-control-user mb-3" placeholder="Postal code" name="post_code" required id="post_code"> 
+                          <input class="form-control form-control-user mb-3" placeholder="Postal code" name="post_code" id="post_code"> 
                           <div id="postalError" style="color: red;"></div>
                       </div>
                       <button
                       class="btn btn-primary d-block btn-user w-100"
-                      type="submit"
-                      onclick="validateForm()">
+                      type="submit">
                       Save address
                   </button>
                   </div>
               </form>
+              <div id="response"></div>
               </div>
             </div>
             <div class="card-footer border-0 px-4 py-5"
@@ -105,6 +106,7 @@
       </div>
     </div>
   </section>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
     fetch('/order/api'+window.location.pathname)
     .then(response => response.json())
@@ -117,24 +119,30 @@
         document.getElementById('Paid').innerHTML = 'is paid: '+data.queryset.is_paid;
         document.getElementById('Coupon').innerHTML = 'coupon: '+data.queryset.coupon;
         document.getElementById('total-paid').innerHTML = data.queryset.total_price;
-        document.getElementById('province-detail').innerHTML = 'province: '+data.queryset.province;
-        document.getElementById('city-detail').innerHTML = 'city: '+data.queryset.city;
-        document.getElementById('detailed').innerHTML = 'adress detail: '+data.queryset.detailed_address;
-        document.getElementById('postal-detail').innerHTML = 'postal code: '+data.queryset.postal_code;
 
-        if (data.queryset.province != null) {
-          document.getElementById('province').parentNode.classList.add('d-none');
-      }
-      if (data.queryset.city != null) {
-          document.getElementById('city').parentNode.classList.add('d-none');
-      }
-      if (data.queryset.detailed_address != null) {
-          document.getElementById('detail').parentNode.classList.add('d-none');
-      }
-      if (data.queryset.postal_code != null) {
-          document.getElementById('post_code').parentNode.classList.add('d-none');
-      }
     })
+    fetch('/order/api/showaddress')
+    .then(response => response.json())
+    .then(data => {
+    console.log(data.queryset.province)
+    document.getElementById('province-detail').innerHTML = 'province: '+data.queryset.province;
+    document.getElementById('city-detail').innerHTML = 'city: '+data.queryset.city;
+    document.getElementById('detailed').innerHTML = 'adress detail: '+data.queryset.detailed_address;
+    document.getElementById('postal-detail').innerHTML = 'postal code: '+data.queryset.postal_code;
+
+    if (data.queryset.province != null) {
+      document.getElementById('province').parentNode.classList.add('d-none');
+  }
+  if (data.queryset.city != null) {
+      document.getElementById('city').parentNode.classList.add('d-none');
+  }
+  if (data.queryset.detailed_address != null) {
+      document.getElementById('detail').parentNode.classList.add('d-none');
+  }
+  if (data.queryset.postal_code != null) {
+      document.getElementById('post_code').parentNode.classList.add('d-none');
+  }})
+
     .catch(error => console.error('Error:', error));
 
     function validateForm() {
@@ -165,32 +173,7 @@
           return false;
       }
       return true;
-
+    }
     // Serialize form data into a JSON object
-    const formData = {
-        province: document.getElementById('province').value,
-        city: document.getElementById('city').value,
-        detail: document.getElementById('detail').value,
-        post_code: document.getElementById('post_code').value,
-    };
-
-    // Send a POST request to the API endpoint with the JSON data
-    fetch('/order/api/address/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Handle successful response
-        console.log(data);
-    })
-    .catch(error => {
-        // Handle error
-        console.error('Error:', error);
-    });
-  }
   </script>
 </body>

@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import User,Address
 from django.contrib import messages
 from django.shortcuts import redirect
+from product.serializers import UserSerializer
 import re
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from djoser.serializers import UserSerializer as BaseUserSerializer, UserCreateSerializer as BaseUserCreateSerializer
@@ -84,6 +85,7 @@ class UserCreateSerializer(BaseUserCreateSerializer):
         fields = ['id', 'phone_number', 'email', 'password','first_name','last_name']
         
 class AddressSerializer(serializers.ModelSerializer):
+    user=UserSerializer()
     class Meta:
         model=Address
         fields='__all__'
