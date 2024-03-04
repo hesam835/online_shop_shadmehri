@@ -5,7 +5,7 @@ from .models import User,Address
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import permissions
+from rest_framework import permissions,status
 import random
 from utils import send_otp_code
 from django.contrib import messages
@@ -148,14 +148,44 @@ def profile(request):
 def edit_profile(request):
     return render(request , 'edit_profile.html' , context={})
 
+def edit_address(request):
+    return render(request , 'edit_address.html' , context={})
+
 class ProfileAPiVIew(APIView):
     permission_classes = [IsAuthenticated]
     def get(self,request):
         queryset=User.objects.get(id=request.user.id)
         serializer=ProfileSerializer(queryset)
         return Response({'queryset': serializer.data})
-
-
     
-   
+class UpdateAddressAPIView(APIView):
+    def post(self, request):
+        data=request.data
+        address=Address.objects.update(province=data['province'],city=data['city'],detailed_address=data['detailed_address'],postal_code=data['postal_code'],user=request.user)
+        return redirect('profile')
+
+class UpdateProfileAPIView(APIView):
+    def post(self, request):
+        data = request.data
+        phone_number = data.get('phone_number')
+        
+        # Check if the phone number already exists
+        existing_user = User.objects.filter(phone_number=phone_number).first()
+        if existing_user:
+            # Update existing user
+            existing_user.first_name = data.get('first_name', existing_user.first_name)
+            existing_user.last_name = data.get('last_name', existing_user.last_name)
+            existing_user.email = data.get('email', existing_user.email)
+            existing_user.save()
+            return redirect('profile')
+        else:
+            # Create new user
+            profile = User.objects.create(
+                first_name=data['first_name'],
+                last_name=data['last_name'],
+                phone_number=phone_number,
+                email=data['email']
+            )
+            return redirect('profile')
+
 

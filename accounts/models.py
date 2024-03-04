@@ -24,7 +24,7 @@ class User(AbstractBaseUser,PermissionsMixin):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=11, unique=True, validators=[RegexValidator(r'^\d{11}$', message='Enter a valid 11-digit phone number.')])
-    email = models.EmailField(max_length=255, unique=True, validators=[EmailValidator(message='Enter a valid email address.')])
+    email = models.EmailField(max_length=255, validators=[EmailValidator(message='Enter a valid email address.')])
     image = models.ImageField(upload_to=user_image_path,null=True)
     role = models.CharField(max_length=255, choices=ROLE_CHOICES, default ="Customer")
     created_at = models.DateTimeField(auto_now_add=True)
@@ -89,7 +89,7 @@ class Address(BaseModel):
     city = models.CharField(max_length=255)
     detailed_address = models.TextField()
     postal_code = models.IntegerField()
-    user = models.ForeignKey(User, on_delete=models.PROTECT) # this relation is between both customers and staff with Address.
+    user = models.ForeignKey(User, on_delete=models.PROTECT , null=True , blank=True) # this relation is between both customers and staff with Address.
 
 
 class OTPCODE(models.Model):

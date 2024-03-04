@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Cart , CartItem,Coupon ,Order,OrderItem
-from accounts.models import Address
+from accounts.models import Address,User
 from product.models import Product
 from product.serializers import UserSerializer
 class CartSerializer(serializers.ModelSerializer):
@@ -59,3 +59,11 @@ class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
         fields = '__all__'
+        
+class AddressSaveSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    class Meta:
+        model = Address
+        fields = '__all__'
+
+

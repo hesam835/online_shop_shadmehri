@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from product.models import Product
 from .models import Order,OrderItem,Coupon
 from accounts.models import Address
-from .serializers import CartItemSerializer,CartSerializer,CouponSerializer,OrderSerializer,OrderItemSerializer,AddressSerializer
+from .serializers import CartItemSerializer,CartSerializer,CouponSerializer,OrderSerializer,OrderItemSerializer,AddressSerializer,AddressSaveSerializer
 from django.views import View
 from django.conf import settings
 import requests
@@ -141,15 +141,12 @@ class OrderCreate(APIView):
         cart.clear()
         return redirect("order_detail",order.id)
 
-
 class AddressAPIView(APIView):
-    def post(self, request, format=None):
-        serializer = AddressSerializer(data=request.POST)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    def post(self, request):
+        data=request.data
+        address=Address.objects.create(province=data['province'],city=data['city'],detailed_address=data['detailed_address'],postal_code=data['postal_code'],user=request.user)
+        return Response(status=status.HTTP_200_OK)
+    
 class ShowAddressApi(APIView):
     permission_classes = [IsAuthenticated]
     def get(self,request):
