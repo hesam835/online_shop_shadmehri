@@ -18,6 +18,7 @@ from django.core.serializers import serialize
 from django.db.models import QuerySet
 from rest_framework import status
 from django.contrib.auth.models import AnonymousUser
+from django.views.decorators.cache import cache_page
 
 import json
 
@@ -32,6 +33,8 @@ def detail_cart(request,order_id):
 def order_history(request):
     return render(request,'order_history.html',context={})
     
+    
+#show all carts
 class ShowCart(APIView):
     def get(self, request):
         cart = CartAdd(request)
@@ -59,7 +62,8 @@ class CartAdd:
         if not cart:
             cart = self.session[CART_SESSION_ID] = {}
         self.cart = cart
-        
+
+    #To make the class iterable
     def __iter__(self):
         product_ids=self.cart.keys()
         products=Product.objects.filter(id__in=product_ids)
@@ -69,10 +73,11 @@ class CartAdd:
         for item in cart.values():
             item['total_price']=int(item['price'])*item['quantity']
             yield item
-            
+    
     def __len__(self):
         return sum(item['quantity'] for item in self.cart.values())         
     
+    #add cart in session 
     def add(self, product, quantity):
         product_id = str(product.id)
         if product_id not in self.cart:
@@ -80,9 +85,11 @@ class CartAdd:
         self.cart[product_id]['quantity'] += quantity
         self.save()
 
+
     def save(self):
         self.session.modified = True    
-        
+    
+    #calculate total price
     def get_total_price(self):
         return sum(int(item['price'])*item['quantity'] for item in self.cart.values())
     
@@ -91,18 +98,17 @@ class CartAdd:
         if product_id in self.cart:
             del self.cart[product_id]
             self.save()
-            
+    #delete cart      
     def clear(self):
         del self.session[CART_SESSION_ID]
         self.save()
         
-        
+#add to cart
 class Cart_Add(APIView):
     def post(self, request, slug):
         cart = CartAdd(request)
         data=request.POST
         quantity=data["myInput"]
-        print(quantity)
         try:
             queryset = Product.objects.get(slug=slug)
             cart.add(queryset,int(quantity))
@@ -111,7 +117,7 @@ class Cart_Add(APIView):
         print(request.session.get(CART_SESSION_ID))
         return redirect('cart') 
 
-
+#api for remove cart
 class CartRemoveApi(APIView):
     def get(self,request,slug):
         cart=CartAdd(request)
@@ -119,7 +125,7 @@ class CartRemoveApi(APIView):
         cart.remove(queryset)
         return redirect('cart') 
 
-
+#shows order detail 
 class OrderDetail(APIView):
     permission_classes = [IsAuthenticated]
     def get(self,request,order_id):
@@ -127,7 +133,7 @@ class OrderDetail(APIView):
         serializer=OrderSerializer(queryset)
         return Response({'queryset':serializer.data})
 
-
+#Convert card to order
 class OrderCreate(APIView):
     permission_classes = [IsAuthenticated]
     def get(self,request):
@@ -141,12 +147,16 @@ class OrderCreate(APIView):
         cart.clear()
         return redirect("order_detail",order.id)
 
+#in order detail for save address
 class AddressAPIView(APIView):
     def post(self, request):
         data=request.data
-        address=Address.objects.create(province=data['province'],city=data['city'],detailed_address=data['detailed_address'],postal_code=data['postal_code'],user=request.user)
+        create_address=Address.objects.create(province=data['province'],city=data['city'],detailed_address=data['detailed_address'],postal_code=data['postal_code'],user=request.user)
+        address=Order.objects.update(province=data['province'],city=data['city'],detailed_address=data['detailed_address'],postal_code=data['postal_code'],user=request.user)
         return Response(status=status.HTTP_200_OK)
-    
+
+
+#show address in customer panel    
 class ShowAddressApi(APIView):
     permission_classes = [IsAuthenticated]
     def get(self,request):
@@ -154,11 +164,10 @@ class ShowAddressApi(APIView):
         serializer=AddressSerializer(queryset,many=True)
         return Response({'queryset':serializer.data})        
 
+#show all orders in order history
 class OrderHistoryApi(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
-        print(request.user.id)
-        print("==========================================")
         queryset = Order.objects.filter(user=request.user)
         serializer = OrderSerializer(queryset, many=True)
         return Response({'queryset': serializer.data})
@@ -172,6 +181,7 @@ class OrderHistoryApi(APIView):
 
 
 #==================================================================
+#**************zarinpal***************
 if settings.SANDBOX:
     sandbox = 'sandbox'
 else:

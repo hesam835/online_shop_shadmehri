@@ -16,6 +16,6 @@ urlpatterns = [
     path('api/cart_remove/<slug:slug>/' , CartRemoveApi.as_view() , name="cart_remove"),
     path('api/address/', AddressAPIView.as_view(), name='address_api_order'),
     path('api/order_history/', OrderHistoryApi.as_view(), name='order_history_api'),
-    path('api/showaddress/', ShowAddressApi.as_view(), name='show_address_api'),
+    path('api/showaddress/order/order_detail/<int:order_id>', ShowAddressApi.as_view(), name='show_address_api'),
 
 ]

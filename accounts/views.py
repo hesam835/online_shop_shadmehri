@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views import View
+from product.serializers import UserSerializer
 from .serializers import UserRegisterSerializer, OtpCodeSerializer , UserLoginSerializer,ProfileSerializer,AddressSerializer
 from .models import User,Address
 from rest_framework.response import Response
@@ -19,6 +20,7 @@ from django.http import JsonResponse
 from .serializers import LoginSerializer, TokenRefreshSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.decorators import api_view, permission_classes
+from django.views.decorators.cache import cache_page
 
 # redis
 redis_client = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB)
@@ -62,6 +64,7 @@ class VerifyCodeView(View):
         
 def login(request):
     return render(request,"login.html",context={})
+
 class VerifyCodeAPIView(APIView): 
     def post(self, request):
         if "user_profile_info" not in request.session or "phone_number" not in request.session["user_profile_info"]:
@@ -148,9 +151,13 @@ def profile(request):
 def edit_profile(request):
     return render(request , 'edit_profile.html' , context={})
 
-def edit_address(request):
+def edit_address(request,address_id):
     return render(request , 'edit_address.html' , context={})
 
+def show_address(request):
+    return render(request , 'address.html' , context={})
+
+#show profile detail in customer panel
 class ProfileAPiVIew(APIView):
     permission_classes = [IsAuthenticated]
     def get(self,request):
@@ -158,34 +165,60 @@ class ProfileAPiVIew(APIView):
         serializer=ProfileSerializer(queryset)
         return Response({'queryset': serializer.data})
     
+# edit address(province,city,address detail,postal code)   
 class UpdateAddressAPIView(APIView):
     def post(self, request):
         data=request.data
         address=Address.objects.update(province=data['province'],city=data['city'],detailed_address=data['detailed_address'],postal_code=data['postal_code'],user=request.user)
         return redirect('profile')
 
-class UpdateProfileAPIView(APIView):
-    def post(self, request):
-        data = request.data
-        phone_number = data.get('phone_number')
+# edit profile in customer
+# class UpdateProfileAPIView(APIView):
+#     def post(self, request):
+#         data = request.data
+#         phone_number = data.get('phone_number')
         
-        # Check if the phone number already exists
-        existing_user = User.objects.filter(phone_number=phone_number).first()
-        if existing_user:
-            # Update existing user
-            existing_user.first_name = data.get('first_name', existing_user.first_name)
-            existing_user.last_name = data.get('last_name', existing_user.last_name)
-            existing_user.email = data.get('email', existing_user.email)
-            existing_user.save()
-            return redirect('profile')
+#         # Check if the phone number already exists
+#         existing_user = User.objects.filter(phone_number=phone_number).first()
+#         if existing_user:
+#             # Update existing user
+#             existing_user.first_name = data.get('first_name', existing_user.first_name)
+#             existing_user.last_name = data.get('last_name', existing_user.last_name)
+#             existing_user.email = data.get('email', existing_user.email)
+#             existing_user.save()
+#             return redirect('profile')
+#         else:
+#             # Create new user
+#             profile = User.objects.create(
+#                 first_name=data['first_name'],
+#                 last_name=data['last_name'],
+#                 phone_number=phone_number,
+#                 email=data['email']
+#             )
+#             return redirect('profile')
+
+
+class UpdateProfileAPIView(APIView):
+    def get(self, request):
+        user_ser = UserSerializer(instance=request.user)
+        addresses = Address.objects.filter(user=request.user)
+        address_ser = AddressSerializer(instance=addresses, many=True)
+        
+        responses_data = {
+            "customer_info":user_ser.data,
+            "address_info":address_ser.data,
+        }
+        
+        return Response(data=responses_data, status=status.HTTP_200_OK)
+    
+    def put(self, request):
+        user_ser = UserSerializer(instance=request.user, data=request.data, partial=True)
+        if user_ser.is_valid():
+            user_ser.save()
         else:
-            # Create new user
-            profile = User.objects.create(
-                first_name=data['first_name'],
-                last_name=data['last_name'],
-                phone_number=phone_number,
-                email=data['email']
-            )
-            return redirect('profile')
+            return Response(user_ser.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        redirect_url = reverse("accounts:user_panel")  
+        return Response({'redirect_url': redirect_url}, status=status.HTTP_200_OK)
 
 

@@ -115,30 +115,26 @@
         document.getElementById('Paid').innerHTML = 'is paid: '+data.queryset.is_paid;
         document.getElementById('Coupon').innerHTML = 'coupon: '+data.queryset.coupon;
         document.getElementById('total-paid').innerHTML = data.queryset.total_price;
+        document.getElementById('province-detail').innerHTML = 'province: '+data.queryset.province;
+        document.getElementById('city-detail').innerHTML = 'city: '+data.queryset.city;
+        document.getElementById('detailed').innerHTML = 'adress detail: '+data.queryset.detailed_address;
+        document.getElementById('postal-detail').innerHTML = 'postal code: '+data.queryset.postal_code;
+      
+        if (data.queryset.province != null) {
+            document.getElementById('province').parentNode.classList.add('d-none');
+            document.getElementById('saveAddressBtn').disabled = true
+        }
+        if (data.queryset.city != null) {
+            document.getElementById('city').parentNode.classList.add('d-none');
+        }
+        if (data.queryset.detailed_address != null) {
+            document.getElementById('detail').parentNode.classList.add('d-none');
+        }
+        if (data.queryset.postal_code != null) {
+            document.getElementById('post_code').parentNode.classList.add('d-none');
+        }
 
     })
-    fetch('/order/api/showaddress')
-    .then(response => response.json())
-    .then(data => {
-    data.queryset.forEach(function(product) {
-    document.getElementById('province-detail').innerHTML = 'province: '+product.province;
-    document.getElementById('city-detail').innerHTML = 'city: '+product.city;
-    document.getElementById('detailed').innerHTML = 'adress detail: '+product.detailed_address;
-    document.getElementById('postal-detail').innerHTML = 'postal code: '+product.postal_code;
-
-  if (product.province != null) {
-      document.getElementById('province').parentNode.classList.add('d-none');
-      document.getElementById('saveAddressBtn').disabled = true
-  }
-  if (product.city != null) {
-      document.getElementById('city').parentNode.classList.add('d-none');
-  }
-  if (product.detailed_address != null) {
-      document.getElementById('detail').parentNode.classList.add('d-none');
-  }
-  if (product.postal_code != null) {
-      document.getElementById('post_code').parentNode.classList.add('d-none');
-  }})})
 
     .catch(error => console.error('Error:', error));
 

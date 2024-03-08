@@ -9,7 +9,9 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+import environ
+env = environ.Env()
+environ.Env.read_env()
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -31,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'debug_toolbar',
     'rest_framework',
     'djoser',
     'rest_framework.authtoken',
@@ -55,7 +58,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+
 ]
+
+
+if DEBUG:
+    INTERNAL_IPS = [
+        '127.0.0.1',
+    ]
 
 ROOT_URLCONF = 'shop.urls'
 
@@ -108,6 +119,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+def show_toolbar(request):
+    return True
+SHOW_TOOLBAR_CALLBACK = show_toolbar
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
@@ -153,9 +167,13 @@ REDIS_DB = 0
 CACHES = {
 "default": {
 "BACKEND": "django.core.cache.backends.redis.RedisCache",
-"LOCATION": "redis://127.0.0.1:6379",
+"LOCATION": env.str("REDIS_URL", "redis://localhost:6379/"),
+"KEY_PREFIX": "shop",
+"TIMEOUT": 60 * 15, # in seconds: 60 * 15 (15 minutes)
 }
 }
+
+
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 from datetime import timedelta

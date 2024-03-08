@@ -11,27 +11,33 @@ from rest_framework import filters
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from django.views.decorators.cache import cache_page
 
 from rest_framework import generics
 
 from django.shortcuts import get_object_or_404
 
+
+#show all category
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@cache_page(60*15)
 def get_details(request):
     category = Category.objects.filter(is_sub=False)
     serializer = CategorySerializer(category, many=True)
     return Response({'category': serializer.data})
 
-
+#show all subcategory
 @api_view(['GET'])
+@cache_page(60*15)
 def get_details_sub(request,slug):
     subcategory = Category.objects.get(slug=slug)
     subcategories = Category.objects.filter(parent_category=subcategory)
     serializer = CategorySerializer(subcategories, many=True)
     return Response({'subcategory': serializer.data})
 
+#show all products
 @api_view(['GET'])
+@cache_page(60*15)
 def get_product(request,slug):
     category_parent = Category.objects.get(slug=slug)
     product = Product.objects.filter(category_id = category_parent)
@@ -39,7 +45,9 @@ def get_product(request,slug):
     return Response({'products':serializer.data})
     
     
+#show detail product
 @api_view(['GET'])
+@cache_page(60*15)
 def get_detail_product(request,slug):
     product = Product.objects.get(slug=slug)
     serializer = ProductSerializer(instance=product)
@@ -61,14 +69,17 @@ def get_detail_product(request,slug):
     
     
     
-    
+#show all discount 
 @api_view(['GET'])
+@cache_page(60*15)
 def get_discount(request):
     discount = Discount.objects.all()
     serializer = DiscountSerializer(discount,many=True)
     return Response({'discount':serializer.data})
 
+#show all products comment
 @api_view(['GET'])
+@cache_page(60*15)
 def get_comment(request,slug):
     product_parent = Product.objects.get(slug=slug)
     comment = Comment.objects.filter(product_id = product_parent)
@@ -76,26 +87,31 @@ def get_comment(request,slug):
     return Response({'comment':serializer.data})
 
 
+#show all product feature
 @api_view(['GET'])
+@cache_page(60*15)
 def get_productfeature(request,slug):
     product_parent = Product.objects.get(slug=slug)
     product_feature = ProductFeatureValue.objects.filter(product= product_parent)
     serializer = ProductFeatureValueSerializer(product_feature,many=True)
     return Response({'product_feature':serializer.data})
 
+#show all news
 @api_view(['GET'])
+@cache_page(60*15)
 def get_news(request):
     news = News.objects.all()
     serializer =NewsSerializer(news,many=True)
     return Response({'news':serializer.data})
 
-
+#search product by name
 class SearchAPIView(generics.ListCreateAPIView):
     search_fields = ['name']
     filter_backends = (filters.SearchFilter,)
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
   
+#show all users
 @api_view(['GET'])
 def get_users(request):
     users = User.objects.all()
@@ -103,7 +119,6 @@ def get_users(request):
     return Response({'user':serializer.data})
 
   
-
 def about_us(request):
     return render(request , 'about.html' , context={})
 
@@ -127,6 +142,7 @@ def product_list(request,slug):
 
 def comment(request,slug):
     return render(request , 'comment.html' ,context={})
+
 # def product_list(request,slug):
 #     product_list = Product.objects.all()
 #     page = request.GET.get('page', 1)
