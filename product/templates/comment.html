@@ -70,26 +70,21 @@
 			</div>
 		</div>
 		</div>
-		<form class="form-block">
+		<form class="form-block" id="myForm" method="post" action="{% url 'post_comment' %}">
+			{% csrf_token %}
 			<div class="row">
-				<div class="col-xs-12 col-sm-6">
-					<div class="form-group fl_icon">
-						<div class="icon"><i class="fa fa-user"></i></div>
-						<input class="form-input" type="text" placeholder="Your name">
-					</div>
-				</div>
 				<div class="col-xs-12 col-sm-6 fl_icon">
 					<div class="form-group fl_icon">
 						<div class="icon"><i class="fa fa-envelope-o"></i></div>
-						<input class="form-input" type="text" placeholder="Your email">
+						<input class="form-input" type="text" placeholder="Product name" name="name">
 					</div>
 				</div>
 				<div class="col-xs-12">									
 					<div class="form-group">
-						<textarea class="form-input" required="" placeholder="Your text"></textarea>
+						<textarea class="form-input" required="" placeholder="Your text" name="text_message"></textarea>
 					</div>
 				</div>
-				<a class="btn btn-primary pull-right">submit</a>
+				<button id="saveAddressBtn" class="btn btn-primary d-block btn-user w-100" type="submit">Save comment</button>
 			</div>
 		</form>
 	</div>
@@ -132,5 +127,35 @@
 			});
 		})
 		.catch(error => console.error('Error:', error)); 
+		function saveAddress() {
+			const formData = new FormData(document.getElementById("myForm"));
+			const data = {};
+			formData.forEach((value, key) => {
+				data[key] = value;
+			});
+			const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+			fetch('api/post_comment/', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': csrftoken
+				},
+				body: JSON.stringify(data),
+			})
+			.then(response => {
+				if (!response.ok) {
+					throw new Error('Network response was not ok');
+				}
+				return response.json();
+			})
+			.then(data => {
+				alert('Comment created successfully');
+				console.log(data);
+			})
+			.catch(error => {
+				alert('There was a problem creating the Comment');
+				console.error('Error:', error);
+			});
+		}
 	</script>
 </body>

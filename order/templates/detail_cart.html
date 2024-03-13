@@ -65,9 +65,16 @@
                 <p class="text-muted mb-0" id="detailed"><span class="fw-bold me-4">province:</span> ?</p>
                 <p class="text-muted mb-0" id="postal-detail"><span class="fw-bold me-4">province:</span> ?</p>
               </div>
+
               <div class="d-flex justify-content-between mb-5">
                 <form class="user" id="myForm" action="{% url 'address_api_order' %}" method="post">
                   {% csrf_token %}
+                  <div class="col-md-12">
+                    <select class="form-control form-control-user mb-3" id="address-dropdown">
+                        <option value="">Select Address</option>
+                        <!-- Options will be dynamically populated via JavaScript -->
+                    </select>
+                  </div>
                   <div class="row mb-3">
                       <div class="col-md-12">
                           <input class="form-control form-control-user mb-3" placeholder="Province" type="text" name="province" id="province"> 
@@ -104,104 +111,119 @@
   </section>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
-    fetch('/order/api'+window.location.pathname)
-    .then(response => response.json())
-    .then(data => {
-        // Replace the innerHTML of the elements with the data from the API
-        console.log(data.total_price)
-        document.getElementById('username').innerHTML = 'Thanks for your Order '+data.queryset.user.first_name;
-        document.getElementById('total-price').innerHTML = 'total price: '+data.queryset.total_price;
-        document.getElementById('created-at').innerHTML = 'created at '+data.queryset.created_at;
-        document.getElementById('Paid').innerHTML = 'is paid: '+data.queryset.is_paid;
-        document.getElementById('Coupon').innerHTML = 'coupon: '+data.queryset.coupon;
-        document.getElementById('total-paid').innerHTML = data.queryset.total_price;
-        document.getElementById('province-detail').innerHTML = 'province: '+data.queryset.province;
-        document.getElementById('city-detail').innerHTML = 'city: '+data.queryset.city;
-        document.getElementById('detailed').innerHTML = 'adress detail: '+data.queryset.detailed_address;
-        document.getElementById('postal-detail').innerHTML = 'postal code: '+data.queryset.postal_code;
-      
-        if (data.queryset.province != null) {
-            document.getElementById('province').parentNode.classList.add('d-none');
-            document.getElementById('saveAddressBtn').disabled = true
-        }
-        if (data.queryset.city != null) {
-            document.getElementById('city').parentNode.classList.add('d-none');
-        }
-        if (data.queryset.detailed_address != null) {
-            document.getElementById('detail').parentNode.classList.add('d-none');
-        }
-        if (data.queryset.postal_code != null) {
-            document.getElementById('post_code').parentNode.classList.add('d-none');
-        }
+    // Function to update input fields when a dropdown option is selected
+    function updateInputFields() {
+      var selectedOption = document.getElementById("address-dropdown").value;
+      var selectedAddress = selectedOption.split(', '); // Splitting the selected option by comma and space
 
+      // Updating input field values with the selected address details
+      document.getElementById('province').value = selectedAddress[0];
+      document.getElementById('city').value = selectedAddress[1];
+      document.getElementById('detail').value = selectedAddress[2];
+      document.getElementById('post_code').value = selectedAddress[3];
+  }
+
+  fetch('/order/api'+window.location.pathname)
+  .then(response => response.json())
+  .then(data => {
+      // Replace the innerHTML of the elements with the data from the API
+      console.log(data.total_price)
+      document.getElementById('username').innerHTML = 'Thanks for your Order '+data.queryset.user.first_name;
+      document.getElementById('total-price').innerHTML = 'total price: '+data.queryset.total_price;
+      document.getElementById('created-at').innerHTML = 'created at '+data.queryset.created_at;
+      document.getElementById('Paid').innerHTML = 'is paid: '+data.queryset.is_paid;
+      document.getElementById('Coupon').innerHTML = 'coupon: '+data.queryset.coupon;
+      document.getElementById('total-paid').innerHTML = data.queryset.total_price;
+      document.getElementById('province-detail').innerHTML = 'province: '+data.queryset.province;
+      document.getElementById('city-detail').innerHTML = 'city: '+data.queryset.city;
+      document.getElementById('detailed').innerHTML = 'address detail: '+data.queryset.detailed_address;
+      document.getElementById('postal-detail').innerHTML = 'postal code: '+data.queryset.postal_code;
+
+  })
+  .catch(error => console.error('Error:', error));
+
+  function validateForm() {
+    var province = document.getElementById('province').value;
+    var city = document.getElementById('city').value;
+    var detail = document.getElementById('detail').value;
+    var post_code = document.getElementById('post_code').value;
+    var error = false;
+
+    if (province == "") {
+        document.getElementById('provinceError').innerHTML = 'Please enter Province';
+        error = true;
+    }
+    if (city == "") {
+        document.getElementById('cityError').innerHTML = 'Please enter City';
+        error = true;
+    }
+    if (detail == "") {
+        document.getElementById('detailError').innerHTML = 'Please enter Detail';
+        error = true;
+    }
+    if (post_code == "") {
+        document.getElementById('postalError').innerHTML = 'Please enter Postal code';
+        error = true;
+    }
+
+    if (error) {
+        return false;
+    }
+    return true;
+}
+
+  // Serialize form data into a JSON object
+  function saveAddress() {
+    const formData = new FormData(document.getElementById("myForm"));
+    const data = {};
+    formData.forEach((value, key) => {
+        data[key] = value;
+    });
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    fetch('/order/api/address/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify(data),
     })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        alert('Address created successfully');
+        console.log(data);
+    })
+    .catch(error => {
+        alert('There was a problem creating the address');
+        console.error('Error:', error);
+    });
+}
 
-    .catch(error => console.error('Error:', error));
-
-    function validateForm() {
-      var province = document.getElementById('province').value;
-      var city = document.getElementById('city').value;
-      var detail = document.getElementById('detail').value;
-      var post_code = document.getElementById('post_code').value;
-      var error = false;
-  
-      if (province == "") {
-          document.getElementById('provinceError').innerHTML = 'Please enter Province';
-          error = true;
-      }
-      if (city == "") {
-          document.getElementById('cityError').innerHTML = 'Please enter City';
-          error = true;
-      }
-      if (detail == "") {
-          document.getElementById('detailError').innerHTML = 'Please enter Detail';
-          error = true;
-      }
-      if (post_code == "") {
-          document.getElementById('postalError').innerHTML = 'Please enter Postal code';
-          error = true;
-      }
-  
-      if (error) {
-          return false;
-      }
-      return true;
+fetch('/accounts/api/address/', {
+  method: 'GET',
+  headers: {
+      'Content-Type': 'application/json',
   }
-    // Serialize form data into a JSON object
-    function saveAddress() {
-      // Automatically set the user field to the currently logged-in user
-
-
-      const formData = new FormData(document.getElementById("myForm"));
-      const data = {};
-      formData.forEach((value, key) => {
-          data[key] = value;
-      });
-      const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-      fetch('/order/api/address/', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-              'X-CSRFToken': csrftoken
-          },
-          body: JSON.stringify(data),
-      })
-      .then(response => {
-          if (!response.ok) {
-              throw new Error('Network response was not ok');
-          }
-          return response.json();
-      })
-      .then(data => {
-          alert('Address created successfully');
-          console.log(data);
-      })
-      .catch(error => {
-          alert('There was a problem creating the address');
-          console.error('Error:', error);
-      });
-      console.log("jdkf")
-  }
-  
+})
+.then(response => response.json())
+.then(data => {
+    const addressDropdown = document.getElementById('address-dropdown');
+    data.queryset.forEach(address => {
+        const option = document.createElement('option');
+        option.value = `${address.province}, ${address.city}, ${address.detailed_address}, ${address.postal_code}`;
+        option.text = `${address.province}, ${address.city}, ${address.detailed_address}, ${address.postal_code}`;
+        addressDropdown.appendChild(option);
+    });
+    // Add event listener to the dropdown to update input fields on selection change
+    addressDropdown.addEventListener('change', updateInputFields);
+})
+.catch(error => {
+    console.error('Error:', error);
+});
   </script>
 </body>

@@ -137,8 +137,6 @@ class OrderDetail(APIView):
 class OrderCreate(APIView):
     permission_classes = [IsAuthenticated]
     def get(self,request):
-        print("==============================")
-        print(request.user)
         cart=CartAdd(request)
         total_price=cart.get_total_price()
         order=Order.objects.create(user=request.user,total_price=total_price)
@@ -149,6 +147,7 @@ class OrderCreate(APIView):
 
 #in order detail for save address
 class AddressAPIView(APIView):
+    permission_classes = [IsAuthenticated]
     def post(self, request):
         data=request.data
         create_address=Address.objects.create(province=data['province'],city=data['city'],detailed_address=data['detailed_address'],postal_code=data['postal_code'],user=request.user)

@@ -1,0 +1,53 @@
+services:
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:latest
+    networks:
+      - main
+    ports:
+      - "5673:5672"
+    restart: always
+  
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=cycle_shop
+      - POSTGRES_USER=hesam835
+      - POSTGRES_PASSWORD=Hes@m835sh
+    networks:
+      - main
+    ports:
+      - "5433:5432"
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: 'redis:alpine'
+    hostname: redis
+    networks:
+      - main
+
+
+  app:
+    build: .
+    command: sh -c "python manage.py migrate && gunicorn shop.wsgi -b 0.0.0.0:8000"    
+    container_name: app
+    volumes:
+      - .:/code/
+    depends_on:
+      - postgres
+      - rabbitmq
+    expose:
+      - "8000"
+    networks:
+      - main
+    restart: always
+
+    
+networks:
+  main:
+
+volumes:
+  postgres_data:

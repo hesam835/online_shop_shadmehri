@@ -55,6 +55,7 @@
                     <li class="nav-item"><a class="nav-link" href={% url 'profile' %}><span>profile</span></a></li>
                     <li class="nav-item"><a class="nav-link" href={% url 'order_history' %}><span>orders</span></a></li>
                     <li class="nav-item"><a class="nav-link" href={% url "show_address" %}><span>Address</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href={% url "cycle" %}><span>Shop</span></a></li>
                     <li class="nav-item"></li>
                 </ul>
                 <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
@@ -108,6 +109,9 @@
                                 </tbody>
                                 </table>
                               </div>
+                              <div>
+                                <a href="add_address" class="btn btn-primary">add address </a>
+                              </div>
                             <script>
                               document.addEventListener('DOMContentLoaded', function() {
                                 fetch('/accounts/api/address/')
@@ -119,7 +123,7 @@
                                                             '<td>' + product.city + '</td>' +
                                                             '<td>' + product.detailed_address + '</td>' +
                                                             '<td>' + product.postal_code + '</td>'+
-                                                            '<td><a href="edit_address/'+product.id+'/'+' '+'" class="btn btn-primary">edit</a></td>' ;
+                                                            '<td><a href="edit_address/'+product.id+' '+'" class="btn btn-primary">edit</a></td>' ;
                                             document.getElementById('cart-items').appendChild(row);
                                         });
                                     });

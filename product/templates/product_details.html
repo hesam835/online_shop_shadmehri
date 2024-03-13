@@ -67,6 +67,9 @@
                   <li class="nav-item">
                      <a class="nav-link" href={% url "cart" %}>CART {{ cart|length }}</a>
                   </li>
+                  <li class="nav-item">
+                     <a class="nav-link" href={% url "customer_panel" %}>Customer_panel</a>
+                  </li>
                </ul>
                <form class="form-inline my-2 my-lg-0">
                   <div class="login_menu">
@@ -249,4 +252,24 @@
             }
          
             window.addEventListener('DOMContentLoaded', fetchProductDetail);
+            document.getElementById('customer-panel-btn').addEventListener('click', function(event) {
+               event.preventDefault(); // Prevent the default action of the link
+           
+               // Check if the user is logged in
+               if (!isLoggedIn()) {
+                   // If not logged in, show error message and redirect to login page
+                   alert('You need to login to proceed to checkout.');
+                   window.location.href = "{% url 'login' %}";
+               } else {
+                   // If logged in, proceed to checkout page
+                   window.location.href = "{% url 'customer_panel' %}";
+               }
+           });
+           
+           // Function to check if the user is logged in
+           function isLoggedIn() {
+               // Implement your logic to check if the user is logged in
+               // For example, you can check if there's a token stored in localStorage
+               return localStorage.getItem('accessToken') == null;
+           }
          </script>

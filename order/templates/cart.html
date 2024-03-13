@@ -67,6 +67,9 @@
                   <li class="nav-item">
                     <a class="nav-link" href={% url "cart" %}>CART {{ cart|length }}</a>
                  </li>
+                 <li class="nav-item">
+                  <a class="nav-link" href={% url "customer_panel" %} id="customer-panel-btn">Customer_panel</a>
+                 </li>
                </ul>
                <form class="form-inline my-2 my-lg-0">
                   <div class="login_menu">
@@ -121,7 +124,7 @@
             <td colspan="2"></td>
         <tr>
         </table>
-        <a href="{% url 'create_checkout' %}" class="btn btn-primary">Checkout</a>
+        <a href="{% url 'create_checkout' %}" class="btn btn-primary" id="checkout-btn">Checkout</a>
     </div>
     <div class="footer_section layout_padding">
         <div class="container-fluid">
@@ -176,8 +179,20 @@
 
        $("#main").click(function(){
            $("#navbarSupportedContent").toggleClass("nav-normal")
+      function getAccessToken() {
+      return localStorage.getItem('accessToken');
+      }
+   
+      // Function to make fetch requests with the access token in the headers
+      function fetchWithToken(url, options) {
+      const token = getAccessToken();
+      if (token) {
+         options.headers['Authorization'] = `Bearer ${token}`;
+      }
+      return fetch(url, options);
+      }
        })
-        fetch('/order/api/show_cart/')
+       fetch('/order/api/show_cart/')
         .then(response => response.json())
         .then(data => {
             const cart = data.cart;
@@ -203,5 +218,45 @@
             const total = document.getElementById('total-price');
             total.textContent = totalPrice;
         });
+        document.getElementById('checkout-btn').addEventListener('click', function(event) {
+         event.preventDefault(); // Prevent the default action of the link
+     
+         // Check if the user is logged in
+         if (!isLoggedIn()) {
+             // If not logged in, show error message and redirect to login page
+             alert('You need to login to proceed to checkout.');
+             window.location.href = "{% url 'login' %}";
+         } else {
+             // If logged in, proceed to checkout page
+             window.location.href = "{% url 'create_checkout' %}";
+         }
+     });
+     
+     // Function to check if the user is logged in
+     function isLoggedIn() {
+         // Implement your logic to check if the user is logged in
+         // For example, you can check if there's a token stored in localStorage
+         return localStorage.getItem('accessToken') == null;
+     }
+     document.getElementById('customer-panel-btn').addEventListener('click', function(event) {
+      event.preventDefault(); // Prevent the default action of the link
+  
+      // Check if the user is logged in
+      if (!isLoggedIn()) {
+          // If not logged in, show error message and redirect to login page
+          alert('You need to login to proceed to checkout.');
+          window.location.href = "{% url 'login' %}";
+      } else {
+          // If logged in, proceed to checkout page
+          window.location.href = "{% url 'customer_panel' %}";
+      }
+  });
+  
+  // Function to check if the user is logged in
+  function isLoggedIn() {
+      // Implement your logic to check if the user is logged in
+      // For example, you can check if there's a token stored in localStorage
+      return localStorage.getItem('accessToken') == null;
+  }
     </script>
 </html>
