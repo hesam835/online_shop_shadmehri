@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from .tasks import send_otp_email
 from django.views import View
 from product.serializers import UserSerializer
 from .serializers import UserRegisterSerializer, OtpCodeSerializer , UserLoginSerializer,ProfileSerializer,AddressSerializer
@@ -49,10 +50,10 @@ class UserRegisterAPIView(APIView):
         serializer = UserRegisterSerializer(data=request.POST)
         if serializer.is_valid():
             random_code = random.randint(1000, 9999)
-            send_otp_code(serializer.validated_data["phone_number"], random_code)
-            redis_client.setex(serializer.validated_data["phone_number"], 180, random_code)
-            phone_number = serializer.validated_data["phone_number"]
-            hidden_phone_number = phone_number[:2] + '*'*(len(phone_number)-4) + phone_number[-2:]
+            send_otp_email.delay(serializer.validated_data["email"], random_code)
+            redis_client.setex(serializer.validated_data["email"], 180, random_code)
+            email = serializer.validated_data["email"]
+            hidden_email = email[:6] + '*'*(len(email)-20) + email[-14:]
             request.session["user_profile_info"] = {
                 "first_name":serializer.validated_data["first_name"],
                 "last_name":serializer.validated_data["last_name"],
@@ -60,7 +61,7 @@ class UserRegisterAPIView(APIView):
                 "email":serializer.validated_data["email"],
                 "password":serializer.validated_data["password"]
             }
-            messages.success(request, f"we sent {hidden_phone_number} a code", 'success')
+            messages.success(request, f"we sent {hidden_email} a code", 'success')
             return redirect('verify_code')
         error_messages = serializer.errors
         for k, v in error_messages.items():
@@ -87,17 +88,18 @@ class VerifyCodeAPIView(APIView):
     Methods:
         post(request): Handles POST request for OTP verification.
     """
+    serializer_class=OtpCodeSerializer
     def post(self, request):
         if "user_profile_info" not in request.session or "phone_number" not in request.session["user_profile_info"]:
             messages.error(request, "Please register again", "danger")
             return redirect("register")
 
-        phone_number = request.session["user_profile_info"]["phone_number"]
+        email = request.session["user_profile_info"]["email"]
 
         serializer = OtpCodeSerializer(data=request.POST)
 
         if serializer.is_valid():
-            stored_code = redis_client.get(phone_number)
+            stored_code = redis_client.get(email)
             if stored_code and stored_code.decode('utf-8') == serializer.validated_data["code"]:
                 user_info = request.session["user_profile_info"]
                 try:
@@ -214,5 +216,12 @@ class UpdateProfileAPIView(APIView):
         else:
             return Response(user_ser.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        redirect_url = reverse("accounts:user_panel")  
+        redirect_url = reverse("customer_panel")  
         return Response({'redirect_url': redirect_url}, status=status.HTTP_200_OK)
+
+from django.core.mail import send_mail
+from django.http import HttpResponse
+
+def email_form(request):
+    return render(request, 'email_form.html')
+

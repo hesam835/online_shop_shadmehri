@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'debug_toolbar',
+    "drf_spectacular",
     'rest_framework',
     'djoser',
     'rest_framework.authtoken',
@@ -196,8 +197,22 @@ REST_FRAMEWORK = {
 'DEFAULT_AUTHENTICATION_CLASSES': (
 'rest_framework_simplejwt.authentication.JWTAuthentication',
 ),
+'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+
+}
+SPECTACULAR_SETTINGS = {
+'TITLE': 'cycle_shop',
+'DESCRIPTION': 'Your project description',
+'VERSION': '1.0.0',
 }
 
 MERCHANT = "00000000-0000-0000-0000-000000000000"
 
 SANDBOX = True
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True  # or False if your SMTP server doesn't use TLS
+EMAIL_HOST_USER = 'shadmehrihesam@gmail.com'
+EMAIL_HOST_PASSWORD = 'qdbm lals ymcw tjqf'

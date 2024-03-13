@@ -80,19 +80,8 @@ class UserSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     """
     Serializer for the Comment model.
-
-    This serializer serializes Comment model instances and includes the associated user using the UserSerializer.
-
-    Attributes:
-        user_id (UserSerializer): Serializer for the user associated with the comment.
-
-    Attributes:
-        Meta (class): A nested class defining metadata options for the serializer.
-            model (Model): The model class to be serialized.
-            fields (tuple): The fields to include in the serialized data.
     """
     user_id = UserSerializer()
-
     class Meta:
         model = Comment
         fields = '__all__'

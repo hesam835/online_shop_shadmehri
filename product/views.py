@@ -97,7 +97,6 @@ def get_detail_product(request, slug):
     return Response(data=response_data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
-@cache_page(60*15)
 def get_discount(request):
     """
     Retrieve all discounts.
@@ -109,22 +108,21 @@ def get_discount(request):
     serializer = DiscountSerializer(discount, many=True)
     return Response({'discount': serializer.data})
 
-@api_view(['GET'])
-def get_comment(request, slug):
-    """
-    Retrieve all comments for a specific product.
-
-    Args:
-        request: HTTP request object.
-        slug (str): Slug of the product.
-
-    Returns:
-        Response: JSON response containing all comments.
-    """
-    product_parent = Product.objects.get(slug=slug)
-    comment = Comment.objects.filter(product_id=product_parent)
-    serializer = CommentSerializer(comment, many=True)
-    return Response({'comment': serializer.data})
+class CommentAPIView(APIView):
+    serializer_class = CommentSerializer
+    def get(self, request, slug):
+        try:
+            product_parent = Product.objects.get(slug=slug)
+            comments = Comment.objects.filter(product_id=product_parent)
+            serializer = CommentSerializer(comments, many=True)
+            return Response({'comment': serializer.data}, status=status.HTTP_200_OK)
+        except Product.DoesNotExist:
+            return Response({'error': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
+    def post(self, request, slug):
+        data = request.data
+        product = Product.objects.get(slug=slug)
+        Comment.objects.create(text_message=data["text_message"], user_id=request.user, product_id=product)
+        return Response(status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 @cache_page(60*15)
@@ -173,12 +171,7 @@ class SearchAPIView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
-class PostComment(APIView):
-    def post(self,request):
-        data=request.data
-        product_id=Product.objects.get(name=data['name'])
-        create_address=Comment.objects.create(text_message=data['text_message'],user_id=request.user,product_id=product_id)
-        return Response(status=status.HTTP_200_OK)
+
 
 @api_view(['GET'])
 def get_users(request):
@@ -220,7 +213,7 @@ def product_list(request, slug):
     """Render the product list page."""
     return render(request, 'product_list.html', context={})
 
-def comment(request, slug):
+def comment(request,slug):
     """Render the comment page."""
     return render(request, 'comment.html', context={})
 
