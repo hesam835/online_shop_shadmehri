@@ -29,10 +29,23 @@ services:
     networks:
       - main
 
-
+  celery_worker:
+    container_name: celery_worker
+    command: "celery -A shop worker -l INFO"
+    depends_on:
+      - app
+      - rabbitmq
+      - postgres
+    build: .
+    environment:
+      - C_FORCE_ROOT="true"
+    networks:
+      - main
+    restart: always
+    
   app:
     build: .
-    command: sh -c "python manage.py migrate && gunicorn shop.wsgi -b 0.0.0.0:8000"    
+    command: sh -c "python manage.py migrate && gunicorn shop.wsgi 0.0.0.0:8000"    
     container_name: app
     volumes:
       - .:/code/
