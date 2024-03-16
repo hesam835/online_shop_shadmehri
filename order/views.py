@@ -143,11 +143,10 @@ class OrderCreate(APIView):
         for item in cart:
             OrderItem.objects.create(order=order,product=item['product'],quantity=item['quantity'])
         cart.clear()
-        return redirect("order_detail",order.id)
+        return Response({"order_id": order.id})
 
 #in order detail for save address
 class AddressAPIView(APIView):
-    permission_classes = [IsAuthenticated]
     def post(self, request):
         data=request.data
         create_address=Address.objects.create(province=data['province'],city=data['city'],detailed_address=data['detailed_address'],postal_code=data['postal_code'],user=request.user)

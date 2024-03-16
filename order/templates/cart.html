@@ -124,7 +124,7 @@
             <td colspan="2"></td>
         <tr>
         </table>
-        <a href="{% url 'create_checkout' %}" class="btn btn-primary" id="checkout-btn">Checkout</a>
+        <a href="#" class="btn btn-primary" id="checkout-btn">Checkout</a>
     </div>
     <div class="footer_section layout_padding">
         <div class="container-fluid">
@@ -179,18 +179,6 @@
 
        $("#main").click(function(){
            $("#navbarSupportedContent").toggleClass("nav-normal")
-      function getAccessToken() {
-      return localStorage.getItem('accessToken');
-      }
-   
-      // Function to make fetch requests with the access token in the headers
-      function fetchWithToken(url, options) {
-      const token = getAccessToken();
-      if (token) {
-         options.headers['Authorization'] = `Bearer ${token}`;
-      }
-      return fetch(url, options);
-      }
        })
        fetch('/order/api/show_cart/')
         .then(response => response.json())
@@ -218,19 +206,10 @@
             const total = document.getElementById('total-price');
             total.textContent = totalPrice;
         });
-        document.getElementById('checkout-btn').addEventListener('click', function(event) {
-         event.preventDefault(); // Prevent the default action of the link
+
      
          // Check if the user is logged in
-         if (!isLoggedIn()) {
-             // If not logged in, show error message and redirect to login page
-             alert('You need to login to proceed to checkout.');
-             window.location.href = "{% url 'login' %}";
-         } else {
-             // If logged in, proceed to checkout page
-             window.location.href = "{% url 'create_checkout' %}";
-         }
-     });
+
      
      // Function to check if the user is logged in
      function isLoggedIn() {
@@ -253,10 +232,35 @@
   });
   
   // Function to check if the user is logged in
-  function isLoggedIn() {
-      // Implement your logic to check if the user is logged in
-      // For example, you can check if there's a token stored in localStorage
-      return localStorage.getItem('accessToken') == null;
-  }
+  document.getElementById('checkout-btn').addEventListener('click', function(event) {
+   event.preventDefault(); // Prevent the default behavior of the link
+   // Check if the user is logged in
+       // If logged in, proceed with checkout
+       fetch('/order/create_checkout/', {
+           method: 'GET',
+           headers: {
+               'Authorization': 'JWT ' + localStorage.getItem('access_token'),
+               'Content-Type': 'application/json',
+           },
+           redirect: 'follow'
+       })
+       .then(response =>response.json())
+       .then(data => {
+           // Redirect to the order detail page upon successful creation
+           window.location.href = 'order_detail/' + data.order_id; // Assuming the API returns the created order ID in JSON response
+       })
+       .catch(error => {
+           console.error('There was a problem with your fetch operation:', error);
+       });
+   }
+);
+
+// Function to check if the user is logged in
+function isLoggedIn() {
+   // Implement your logic to check if the user is logged in
+   // For example, you can check if there's a token stored in localStorage
+   return localStorage.getItem('access_token') !== null;
+}
+
     </script>
 </html>

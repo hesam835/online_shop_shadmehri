@@ -16,7 +16,7 @@ urlpatterns = [
     path("api/verify/", VerifyCodeAPIView.as_view(), name="verify_code_api"),
     path("api/profile/", ProfileAPiVIew.as_view(), name="profile_api"),
     path("api/address/", ShowAddressApi.as_view(), name="address_api"),
-    path("api/update_address/", UpdateAddressAPIView.as_view(), name="update_address_api"),
+    path("edit_address/<int:address_id>/api/", UpdateAddressAPIView.as_view(), name="update_address_api"),
     path("api/update_profile/", UpdateProfileAPIView.as_view(), name="update_profile_api"),
     path("api/add_address/", AddAddressAPIView.as_view(), name="add_address_api"),
 

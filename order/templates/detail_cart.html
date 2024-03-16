@@ -67,7 +67,7 @@
               </div>
 
               <div class="d-flex justify-content-between mb-5">
-                <form class="user" id="myForm" action="{% url 'address_api_order' %}" method="post">
+                <form class="user" id="myForm" method="post">
                   {% csrf_token %}
                   <div class="col-md-12">
                     <select class="form-control form-control-user mb-3" id="address-dropdown">
@@ -92,7 +92,7 @@
                           <input class="form-control form-control-user mb-3" placeholder="Postal code" type="number" name="postal_code" id="post_code"> 
                           <div id="postalError" style="color: red;"></div>
                       </div>
-                      <button id="saveAddressBtn" class="btn btn-primary d-block btn-user w-100" type="submit">Save address</button>
+                      <button id="saveAddressBtn" class="btn btn-primary d-block btn-user w-100" type="submit" onclick="saveAddress()">Save address</button>
                   </div>
               </form>
               <div id="response"></div>
@@ -122,68 +122,16 @@
       document.getElementById('detail').value = selectedAddress[2];
       document.getElementById('post_code').value = selectedAddress[3];
   }
-  function getToken() {
-    // Retrieve the access token from local storage
-    const accessToken = localStorage.getItem('access_token');
-  
-    // Return the access token
-    console.log(accessToken)
-    return accessToken;
-  }
-  function makeAuthenticatedRequest(url, method, context = null) {
-    const token = getToken();
-    const headers = {
-        'Content-Type': 'application/json',
-    };
-
-    if (token) {
-        headers['Authorization'] = `JWT ${token}`;
+const accessToken = localStorage.getItem('access_token');
+const url='/order/api'+window.location.pathname
+  fetch(url,{
+    method:"GET",
+    headers:{
+    "Content-Type":"application/json",
+    "Authorization":"JWT "+accessToken
     }
-
-    const options = {
-        method: method,
-        headers: headers,
-        body: context ? JSON.stringify(context) : null,
-    };
-
-    return fetch(url, options)
-        .then(response => {
-            if (response.ok) {
-                return response.json()
-            } else {
-                return response.json().then(errorJson => {
-                    alert(JSON.stringify(errorJson))
-                    throw new Error(JSON.stringify(errorJson));
-                });
-            }
-        })
-}
-
-function verifyToken() {
-    const token = getToken();
-
-    if (token) {
-        const endpoint = '/core/auth/jwt/verify/';
-
-        makeAuthenticatedRequest(endpoint, 'POST', context = {token: token})
-            .then(response => {
-                console.log(response);
-                if (response.code === 'token_not_valid') {
-                    console.log('Token not valid. User needs to log in.');
-                    alert('Token not valid. User needs to log in.')
-                    window.location.href = '/login/';
-                } else {
-                    console.log('Token is valid. User is already logged in.');
-                }
-            });
-    } else {
-        console.log('No token found. User needs to log in.');
-        alert('No token found. User needs to log in.')
-        window.location.href = '/login/';
-    }
-}
-const url='/order/api'
-makeAuthenticatedRequest(url,'GET')
+    })
+  .then(response => response.json())
   .then(data => {
       // Replace the innerHTML of the elements with the data from the API
       console.log(data.total_price)
@@ -232,41 +180,78 @@ makeAuthenticatedRequest(url,'GET')
 }
 
   // Serialize form data into a JSON object
-  function saveAddress() {
-    const formData = new FormData(document.getElementById("myForm"));
-    const data = {};
-    formData.forEach((value, key) => {
-        data[key] = value;
-    });
-    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    fetch('/order/api/address/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrftoken
-        },
-        body: JSON.stringify(data),
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        alert('Address created successfully');
-        console.log(data);
-    })
-    .catch(error => {
-        alert('There was a problem creating the address');
-        console.error('Error:', error);
-    });
-}
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+    var cookies = document.cookie.split(';');
+    for (var i = 0; i < cookies.length; i++) {
+    var cookie = cookies[i].trim();
+    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+    break;
+    }
+    }
+    }
+    return cookieValue;
+    }
+  function includeAuthToken() {
+    const access_token = localStorage.getItem("access_token");
+    if (access_token) {
+    return {
+    'Authorization': 'JWT ' + access_token
+    };
+    }
+    return {};
+    }
+    function saveAddress() {
+      var province = document.getElementById('province').value;
+      var city = document.getElementById('city').value;
+      var detail = document.getElementById('detail').value;
+      var post_code = document.getElementById('post_code').value;
+  
+      const formData = new FormData(document.getElementById("myForm"));
+      const data = {};
+      formData.forEach((value, key) => {
+          data[key] = value;
+      });
+  
+      const accessToken = localStorage.getItem('access_token');
+  
+      fetch('/order/api/address/', {
+          method: 'POST',
+          headers: {
+              ...includeAuthToken(),
+              'Content-Type': 'application/json',
+              'X-CSRFToken': getCookie('csrftoken'),
+          },
+          body: JSON.stringify({
+              province: province,
+              city: city,
+              detailed_address: detail,
+              postal_code: post_code,
+          })
+      })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Network response was not ok');
+          }
+          return response.json();
+      })
+      .then(data => {
+          if (data.success) {
+              alert('Address created successfully');
+              console.log(data);
+          } else {
+              throw new Error('Address creation failed: ' + data.error);
+          }
+      })
+  }
 
 fetch('/accounts/api/address/', {
   method: 'GET',
   headers: {
       'Content-Type': 'application/json',
+      "Authorization":"JWT "+accessToken
   }
 })
 .then(response => response.json())

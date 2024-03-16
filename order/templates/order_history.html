@@ -111,7 +111,13 @@
                               </div>
                             <script>
                               document.addEventListener('DOMContentLoaded', function() {
-                                fetch('/order/api/order_history')
+                                fetch('/order/api/order_history',{
+                                    method: 'GET',
+                                    headers: {
+                                        'Authorization': 'JWT ' + localStorage.getItem('access_token'),
+                                        'Content-Type': 'application/json',
+                                    },
+                                })
                                     .then(response => response.json())
                                     .then(data => {
                                         data.queryset.forEach(item => {

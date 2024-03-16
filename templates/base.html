@@ -74,11 +74,14 @@
                   <li class="nav-item">
                      <a class="nav-link" href={% url "customer_panel" %} id="customer-panel-btn">Customer_panel</a>
                   </li>
+                  <li class="nav-item">
+                     <a class="nav-link" id='logoutLink' onclick="logoutFunc()">logout</a>
+                  </li>
                </ul>
                <form class="form-inline my-2 my-lg-0">
                   <div class="login_menu">
                      <ul>
-                        <li><a href={% url "login" %}>Login</a></li>
+                        <li><a href={% url "login" %} id='loginLink'>Login</a></li>
                         <li><a href="#"><img src="{% static 'product/images/trolly-icon.png' %}"></a></li>
                         <li><a href="#"><img src="{% static 'product/images/search-icon.png' %}"></a></li>
                      </ul>
@@ -142,3 +145,26 @@
                </div>
          {% block content %}
          {% endblock content %}
+                  <script>
+                     document.addEventListener("DOMContentLoaded", function() {
+                         var loginLink = document.getElementById('loginLink');
+                         var logoutLink = document.getElementById('logoutLink');
+             
+                         // Check if access token exists in localStorage
+                         if (localStorage.getItem('access_token')) {
+                             // Access token exists, hide login link and show logout link
+                             loginLink.style.display = 'none';
+                             logoutLink.style.display = 'block';
+                         } else {
+                             // Access token doesn't exist, show login link and hide logout link
+                             loginLink.style.display = 'block';
+                             logoutLink.style.display = 'none';
+                         }
+                     });
+             
+                     // Function to logout and remove access token from localStorage
+                     function logoutFunc() {
+                         localStorage.removeItem("access_token");
+                         window.location.reload(); // Reload the page to reflect changes
+                     }
+                 </script>

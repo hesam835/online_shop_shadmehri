@@ -171,10 +171,17 @@ class UpdateAddressAPIView(APIView):
         post(request): Handles POST request for updating user address.
     """
     permission_classes = [IsAuthenticated]
-    def post(self, request):
-        data=request.data
-        address=Address.objects.update(province=data['province'],city=data['city'],detailed_address=data['detailed_address'],postal_code=data['postal_code'],user=request.user)
-        return redirect('profile')
+    def put(self, request,address_id):
+        print('000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000')
+        address=Address.objects.get(id=address_id)
+        user_ser = AddressSerializer(address, data=request.data, partial=True)
+        if user_ser.is_valid():
+            user_ser.save()
+        else:
+            return Response(user_ser.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        redirect_url = reverse("customer_panel")  
+        return Response({'redirect_url': redirect_url}, status=status.HTTP_200_OK)
 
 
 class AddAddressAPIView(APIView):
