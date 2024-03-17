@@ -166,6 +166,7 @@ class SearchAPIView(generics.ListCreateAPIView):
         queryset (QuerySet): Queryset containing all products.
         serializer_class (Serializer): Serializer class for products.
     """
+    print('2'*20)
     search_fields = ['name']
     filter_backends = (filters.SearchFilter,)
     queryset = Product.objects.all()
@@ -216,6 +217,8 @@ def product_list(request, slug):
 def comment(request,slug):
     """Render the comment page."""
     return render(request, 'comment.html', context={})
+
+
 
 def product_detail(request, slug):
     """Render the product detail page."""

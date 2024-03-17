@@ -81,12 +81,14 @@
                <form class="form-inline my-2 my-lg-0">
                   <div class="login_menu">
                      <ul>
+                        <li>
+                           <input type="text" id="searchInput" placeholder="Search...">
+                           <ul id="productsList"></ul>
+                        </li>
                         <li><a href={% url "login" %} id='loginLink'>Login</a></li>
                         <li><a href="#"><img src="{% static 'product/images/trolly-icon.png' %}"></a></li>
-                        <li><a href="#"><img src="{% static 'product/images/search-icon.png' %}"></a></li>
                      </ul>
                   </div>
-                  <div></div>
                </form>
             </div>
             <div id="main">
@@ -145,26 +147,62 @@
                </div>
          {% block content %}
          {% endblock content %}
-                  <script>
-                     document.addEventListener("DOMContentLoaded", function() {
-                         var loginLink = document.getElementById('loginLink');
-                         var logoutLink = document.getElementById('logoutLink');
-             
-                         // Check if access token exists in localStorage
-                         if (localStorage.getItem('access_token')) {
-                             // Access token exists, hide login link and show logout link
-                             loginLink.style.display = 'none';
-                             logoutLink.style.display = 'block';
-                         } else {
-                             // Access token doesn't exist, show login link and hide logout link
-                             loginLink.style.display = 'block';
-                             logoutLink.style.display = 'none';
-                         }
-                     });
-             
-                     // Function to logout and remove access token from localStorage
-                     function logoutFunc() {
-                         localStorage.removeItem("access_token");
-                         window.location.reload(); // Reload the page to reflect changes
-                     }
-                 </script>
+         <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                  var loginLink = document.getElementById('loginLink');
+                  var logoutLink = document.getElementById('logoutLink');
+      
+                  // Check if access token exists in localStorage
+                  if (localStorage.getItem('access_token')) {
+                     // Access token exists, hide login link and show logout link
+                     loginLink.style.display = 'none';
+                     logoutLink.style.display = 'block';
+                  } else {
+                     // Access token doesn't exist, show login link and hide logout link
+                     loginLink.style.display = 'block';
+                     logoutLink.style.display = 'none';
+                  }
+            });
+      
+            // Function to logout and remove access token from localStorage
+            function logoutFunc() {
+                  localStorage.removeItem("access_token");
+                  window.location.reload(); // Reload the page to reflect changes
+            }
+        // Function to fetch data from the REST API based on search term and filter
+         // Function to fetch data from the REST API based on search term
+         async function fetchProducts(searchTerm) {
+            searchTerm=document.getElementById('searchInput').value
+            console.log(searchTerm)
+            const url = `/api/search?search=${searchTerm}`;
+            const response = await fetch(url);
+            return response.json();
+        }
+
+        // Function to update the UI with the fetched products
+        function updateUI(products) {
+            const productsList = document.getElementById('productsList');
+            productsList.innerHTML = '';
+
+            products.forEach(product => {
+                const listItem = document.createElement('li');
+                listItem.textContent = product.name; // Adjust as per your API response structure
+                productsList.appendChild(listItem);
+            });
+        }
+
+        // Event listener for search input
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.trim();
+            fetchProducts(searchTerm)
+                .then(products => updateUI(products))
+                .catch(error => console.error('Error fetching products:', error));
+        });
+
+        // Initial fetch on page load
+        window.onload = function() {
+            fetchProducts('')
+                .then(products => updateUI(products))
+                .catch(error => console.error('Error fetching products:', error));
+        };
+         </script>

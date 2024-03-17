@@ -208,6 +208,7 @@ class UpdateProfileAPIView(APIView):
     """
     permission_classes = [IsAuthenticated]
     def get(self, request):
+        print('000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000')
         user_ser = UserSerializer(instance=request.user)
 
         responses_data = {
