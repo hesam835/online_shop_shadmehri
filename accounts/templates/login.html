@@ -1,4 +1,3 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
    <head>
@@ -17,45 +16,45 @@
       <meta name="description" content="">
       <meta name="author" content="">
       <!-- bootstrap css -->
-      <link rel="stylesheet" type="text/css" href="{% static 'product/css/bootstrap.min.css' %}">
+      <link rel="stylesheet" type="text/css" href="/static/product/css/bootstrap.min.css">
       <!-- style css -->
-      <link rel="stylesheet" type="text/css" href="{% static 'product/css/style.css' %}">
-      <link rel="stylesheet" type="text/css" href="{% static 'product/css/image.css' %}">
+      <link rel="stylesheet" type="text/css" href="/static/product/css/style.css">
+      <link rel="stylesheet" type="text/css" href="/static/product/css/image.css">
       <!-- Responsive-->
-      <link rel="stylesheet" href="{% static 'product/css/responsive.css' %}">
-      <link rel="stylesheet" href="{% static 'product/css/detail_cycle.css' %}">
+      <link rel="stylesheet" href="/static/product/css/responsive.css">
+      <link rel="stylesheet" href="/static/product/css/detail_cycle.css">
       <!-- fevicon -->
-      <link rel="icon" href="{% static 'product/images/fevicon.png' %}" type="image/gif" />
+      <link rel="icon" href="/static/product/images/fevicon.png" type="image/gif" />
       <!-- Scrollbar Custom CSS -->
-      <link rel="stylesheet" href="{% static 'product/css/jquery.mCustomScrollbar.min.css' %}">
+      <link rel="stylesheet" href="/static/product/css/jquery.mCustomScrollbar.min.css">
       <!-- Tweaks for older IEs-->
       <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
       <!-- owl stylesheets --> 
       <link href="https://fonts.googleapis.com/css?family=Poppins:400,700|Raleway:400,700,800&display=swap" rel="stylesheet">
-      <link rel="stylesheet" href="{% static 'product/css/owl.carousel.min.css' %}">
-      <link rel="stylesoeet" href="{% static 'product/css/owl.theme.default.min.css' %}">
+      <link rel="stylesheet" href="/static/product/css/owl.carousel.min.css">
+      <link rel="stylesoeet" href="/static/product/css/owl.theme.default.min.css">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
 		<!--===============================================================================================-->	
 		<link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
 		<!--===============================================================================================-->
-			<link rel="stylesheet" type="text/css" href="{% static 'login/vendor/bootstrap/css/bootstrap.min.css' %}">
+			<link rel="stylesheet" type="text/css" href="/static/login/vendor/bootstrap/css/bootstrap.min.css">
 		<!--===============================================================================================-->
-			<link rel="stylesheet" type="text/css" href="{% static 'login/fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+			<link rel="stylesheet" type="text/css" href="/static/login/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
 		<!--===============================================================================================-->
-			<link rel="stylesheet" type="text/css" href="{% static 'login/fonts/iconic/css/material-design-iconic-font.min.css' %}">
+			<link rel="stylesheet" type="text/css" href="/static/login/fonts/iconic/css/material-design-iconic-font.min.css">
 		<!--===============================================================================================-->
-			<link rel="stylesheet" type="text/css" href="{% static 'login/vendor/animate/animate.css' %}">
+			<link rel="stylesheet" type="text/css" href="/static/login/vendor/animate/animate.css">
 		<!--===============================================================================================-->	
-			<link rel="stylesheet" type="text/css" href="{% static 'login/vendor/css-hamburgers/hamburgers.min.css' %}">
+			<link rel="stylesheet" type="text/css" href="/static/login/vendor/css-hamburgers/hamburgers.min.css' %}">
 		<!--===============================================================================================-->
-			<link rel="stylesheet" type="text/css" href="{% static 'login/vendor/animsition/css/animsition.min.css' %}">
+			<link rel="stylesheet" type="text/css" href="/static/login/vendor/animsition/css/animsition.min.css">
 		<!--===============================================================================================-->
-			<link rel="stylesheet" type="text/css" href="{% static 'login/vendor/select2/select2.min.css' %}">
+			<link rel="stylesheet" type="text/css" href="/static/login/vendor/select2/select2.min.css">
 		<!--===============================================================================================-->	
-			<link rel="stylesheet" type="text/css" href="{% static 'login/vendor/daterangepicker/daterangepicker.css' %}">
+			<link rel="stylesheet" type="text/css" href="/static/login/vendor/daterangepicker/daterangepicker.css">
 		<!--===============================================================================================-->
-			<link rel="stylesheet" type="text/css" href="{% static 'login/css/util.css' %}">
-			<link rel="stylesheet" type="text/css" href="{% static 'login/css/main.css' %}">
+			<link rel="stylesheet" type="text/css" href="/static/login/css/util.css">
+			<link rel="stylesheet" type="text/css" href="/static/login/css/main.css">
 		<!--===============================================================================================-->
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	</head>
@@ -63,50 +62,50 @@
       <!-- header section start -->
       <div class="header_section header_bg">
          <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a href="index.html" class="logo"><img src="{% static 'product/images/logo.png' %}"></a>
+            <a href="index.html" class="logo"><img src="/static/product/images/logo.png"></a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                <ul class="navbar-nav mr-auto">
                   <li class="nav-item active">
-                     <a class="nav-link" href={% url "index" %}>Home</a>
+                     <a class="nav-link" href="/index">Home</a>
                   </li>
                   <li class="nav-item">
-                     <a class="nav-link" href={% url "about_us" %}>About</a>
+                     <a class="nav-link" href="/about_us">About</a>
                   </li>
                   <li class="nav-item">
-                     <a class="nav-link" href={% url "cycle" %}>Our Cycle</a>
+                     <a class="nav-link" href="/cycle">Our Cycle</a>
                   </li>
                   <li class="nav-item">
-                     <a class="nav-link" href="shop.html">Shop</a>
+                     <a class="nav-link" href="/cycle">Shop</a>
                   </li>
                   <li class="nav-item">
-                     <a class="nav-link" href={% url "news" %}>News</a>
+                     <a class="nav-link" href="/news">News</a>
                   </li>
                   <li class="nav-item">
-                     <a class="nav-link" href={% url "contact" %}>Contact Us</a>
+                     <a class="nav-link" href="/contact">Contact Us</a>
                   </li>
 				  <li class="nav-item">
-					<a class="nav-link" href={% url "cart" %}>CART {{ cart|length }}</a>
+					<a class="nav-link" id="cart-link" href="/order/cart">CART</a>
 				 </li>
 				 <li class="nav-item">
-					<a class="nav-link" href={% url "customer_panel" %} id="customer-panel-btn">Customer_panel</a>
+					<a class="nav-link" href="/customer_panel" id="customer-panel-btn">Customer_panel</a>
 				 </li>
                </ul>
                <form class="form-inline my-2 my-lg-0">
                   <div class="login_menu">
                      <ul>
-                        <li><a href={% url "login" %}>Login</a></li>
-                        <li><a href="#"><img src="{% static 'product/images/trolly-icon.png' %}"></a></li>
-                        <li><a href="#"><img src="{% static 'product/images/search-icon.png' %}"></a></li>
+                        <li><a href="/accounts/login">Login</a></li>
+                        <li><a href="#"><img src="/static/product/images/trolly-icon.png"></a></li>
+                        <li><a href="#"><img src="/static/product/images/search-icon.png"></a></li>
                      </ul>
                   </div>
                   <div></div>
                </form>
             </div>
             <div id="main">
-               <span style="font-size:36px;cursor:pointer; color: #fff" onclick="openNav()"><img src="{% static 'product/images/toggle-icon.png' %}" style="height: 30px;"></span>
+               <span style="font-size:36px;cursor:pointer; color: #fff" onclick="openNav()"><img src="/static/product/images/toggle-icon.png" style="height: 30px;"></span>
             </div>
          </nav>
          <div class="banner_section layout_padding">
@@ -117,7 +116,7 @@
                         <div class="row">
                            <div class="col-md-7">
                               <div class="best_text">Best</div>
-                              <div class="image_1"><img src="{% static 'product/images/img-1.png' %}"></div>
+                              <div class="image_1"><img src="/static/product/images/img-1.png"></div>
                            </div>
                         </div>
                      </div>
@@ -127,16 +126,10 @@
         </div>
     </div>
 <body>
-	{% if messages %}
-	{% for msg in messages %}
-	   <p class="alert alert-{{msg.tags}}">{{msg}}</p>
-	{% endfor %}
- 	{% endif %}
 	<div class="limiter">
 		<div class="container-login100">
 			<div class="wrap-login100">
-				<form class="login100-form validate-form" id="login-form" method="post">
-					{% csrf_token %}
+				<form class="login100-form validate-form" id="login-form">
 					<span class="login100-form-title p-b-26">
 						Welcome
 					</span>
@@ -169,7 +162,7 @@
 							Don’t have an account?
 						</span>
 
-						<a class="txt2" href={% url "register" %}>
+						<a class="txt2" href="register">
 							Sign Up
 						</a>
 					</div>
@@ -188,9 +181,9 @@
 				 </div>
 			  </div>
 			  <div class="col-lg-4 col-sm-12">
-				 <div class="call_text"><a href="#"><img src="{% static 'images/map-icon.png' %}"><span class="padding_left_0">Page when looking at its layou</span></a></div>
-				 <div class="call_text"><a href="#"><img src="{% static 'images/call-icon.png' %}"><span class="padding_left_0">Call Now  +01 123467890</span></a></div>
-				 <div class="call_text"><a href="#"><img src="{% static 'images/mail-icon.png' %}"><span class="padding_left_0">demo@gmail.com</span></a></div>
+				 <div class="call_text"><a href="#"><img src="/static/images/map-icon.png"><span class="padding_left_0">Page when looking at its layou</span></a></div>
+				 <div class="call_text"><a href="#"><img src="/static/images/call-icon.png"><span class="padding_left_0">Call Now  +01 123467890</span></a></div>
+				 <div class="call_text"><a href="#"><img src="/static/images/mail-icon.png"><span class="padding_left_0">demo@gmail.com</span></a></div>
 				 <input type="text" class="email_text" placeholder="Enter Your Email" name="Enter Your Email">
 				 <div class="subscribe_bt"><a href="#">Subscribe</a></div>
 			  </div>
@@ -207,99 +200,18 @@
 
 	<div id="dropDownSelect1"></div> 
 
-	<script src="{% static 'product/js/jquery.min.js' %}"></script>
-	<script src="{% static 'product/js/popper.min.js' %}"></script>
-	<script src="{% static 'product/js/bootstrap.bundle.min.js' %}"></script>
-	<script src="{% static 'product/js/jquery-3.0.0.min.js' %}"></script>
-	<script src="{% static 'product/js/plugin.js' %}"></script>
+	<script src="/static/product/js/jquery.min.js"></script>
+	<script src="/product/js/popper.min.js"></script>
+	<script src="/static/product/js/bootstrap.bundle.min.js"></script>
+	<script src="/static/product/js/jquery-3.0.0.min.js"></script>
+	<script src="/static/product/js/plugin.js"></script>
 	<!-- sidebar -->
-	<script src="{% static 'product/js/jquery.mCustomScrollbar.concat.min.js' %}"></script>
-	<script src="{% static 'product/js/custom.js' %}"></script>
+	<script src="/static/product/js/jquery.mCustomScrollbar.concat.min.js"></script>
+	<script src="/static/product/js/custom.js"></script>
 	<!-- javascript --> 
-	<script src="{% static 'product/js/owl.carousel.js' %}"></script>
+	<script src="/static/product/js/owl.carousel.js"></script>
 	<script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
-	<script>
-	   function openNav() {
-		 document.getElementById("mySidenav").style.width = "250px";
-		 document.getElementById("main").style.marginLeft = "250px";
-	   }
-	   
-	   function closeNav() {
-		 document.getElementById("mySidenav").style.width = "0";
-		 document.getElementById("main").style.marginLeft= "0";
-		
-	   }
+	<script src="/static/script/login.js"></script>
 
-	   $("#main").click(function(){
-		   $("#navbarSupportedContent").toggleClass("nav-normal")
-	   })
-	   async function login(event) {
-		event.preventDefault(); // Prevent the default form submission behavior
-	
-		const phone_number = document.getElementById('phone_number').value;
-		const password = document.getElementById('password').value;
-	
-		// Validate phone number
-		if (!phone_number.match(/^\d{11}$/)) {
-			alert('Please enter a valid 11-digit phone number.');
-			return;
-		}
-	
-	
-		try {
-			const response = await fetch('/auth/jwt/create/', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ phone_number, password }),
-			});
-	
-			if (response.ok) {
-				const responseData = await response.json();
-				const authToken = responseData.refresh;  // Change access to auth_token
-				const accessToken = responseData.access;  // Change access to auth_token
-				localStorage.setItem('refresh_token', authToken);  // Change access_token to auth_token
-				localStorage.setItem('access_token', accessToken);  // Change access_token to auth_token
-
-				const headers = new Headers();
-				headers.append('Authorization', `Bearer ${accessToken}`);
-	
-				// Example: Fetching user data after login
-
-				window.location.href = 'login';
-			} else {
-				const errorData = await response.json();
-				const errorDetail = errorData.detail;
-				alert(errorDetail);
-			}
-		} catch (error) {
-			console.error('Error:', error);
-			alert('An error occurred while processing your request.');
-		}
-	}
-	
-	document.getElementById('login-form').addEventListener('submit', login);
-	document.getElementById('customer-panel-btn').addEventListener('click', function(event) {
-		event.preventDefault(); // Prevent the default action of the link
-	
-		// Check if the user is logged in
-		if (!isLoggedIn()) {
-			// If not logged in, show error message and redirect to login page
-			alert('You need to login to proceed to checkout.');
-			window.location.href = "{% url 'login' %}";
-		} else {
-			// If logged in, proceed to checkout page
-			window.location.href = "{% url 'customer_panel' %}";
-		}
-	});
-	
-	// Function to check if the user is logged in
-	function isLoggedIn() {
-		// Implement your logic to check if the user is logged in
-		// For example, you can check if there's a token stored in localStorage
-		return localStorage.getItem('accessToken') == null;
-	}
-	</script>
 </body>
 </html>

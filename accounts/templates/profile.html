@@ -1,28 +1,27 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="/static/assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
-    <link rel="stylesheet" href="{% static 'assets/fonts/fontawesome-all.min.css' %}">
-    <link rel="stylesheet" href="{% static 'profile/profile.css' %}">
+    <link rel="stylesheet" href="/static/assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="/static/profile/profile.css">
 </head>
 
 <body id="page-top">
     <div id="wrapper">
         <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0">
             <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
-                <img src="{% static 'product/images/logo.png' %}">
+                <img src="/static/product/images/logo.png">
             </a>
                 <hr class="sidebar-divider my-0">
                 <ul class="navbar-nav text-light" id="accordionSidebar">
-                    <li class="nav-item"><a class="nav-link active" href={% url 'customer_panel' %}><span>dashboard</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href={% url 'profile' %}><span>profile</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href={% url 'order_history' %}><span>orders</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href={% url "show_address" %}><span>Address</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href={% url "cycle" %}><span>Shop</span></a></li>
+                    <li class="nav-item"><a class="nav-link active" href='customer_panel'><span>dashboard</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href='profile'><span>profile</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href='order_history'><span>orders</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="show_address"><span>Address</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="cycle"><span>Shop</span></a></li>
                     <li class="nav-item"></li>
                 </ul>
                 <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
@@ -57,13 +56,13 @@
                     </div>
                 </nav>
                 <div class="container">
-                    <link rel="stylesheet" href="{% static 'profile/profile.css' %}">
+                    <link rel="stylesheet" href="/static/profile/profile.css">
                     <div class="main-body">
                     
                           <!-- Breadcrumb -->
                           <nav aria-label="breadcrumb" class="main-breadcrumb">
                             <ol class="breadcrumb">
-                              <li class="breadcrumb-item"><a href={% url 'customer_panel' %}>Home</a></li>
+                              <li class="breadcrumb-item"><a href='customer_panel'>Home</a></li>
                               <li class="breadcrumb-item"><a href="javascript:void(0)">User</a></li>
                               <li class="breadcrumb-item active" aria-current="page">User Profile</li>
                             </ol>
@@ -100,11 +99,10 @@
                                 </div>
                                   <div>                            
                                     <div class="col-sm-12">
-                                      <a class="btn btn-info " target="__blank" href="{% url 'edit_profile' %}">Edit profile</a>
+                                      <a class="btn btn-info " target="__blank" href='edit_profile'>Edit profile</a>
                                     </div>
                                   </div>
-                              </div>
-                
+                              </div> 
                               <div class="row gutters-sm">
                                 <div class="col-sm-6 mb-3">
                                 </div>
@@ -119,32 +117,10 @@
             </div>
         </div>
     <div>        
-    <script src="{% static 'assets/bootstrap/js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'assets/js/theme.js' %}"></script>
-    <script>
-      // Fetch user data
-      fetch('/accounts/api/profile/',{
-        method: 'GET',
-        headers: {
-            'Authorization': 'JWT ' + localStorage.getItem('access_token'),
-            'Content-Type': 'application/json',
-        },
-    })
-          .then(response => response.json())
-          .then(data => {
-              // Populate placeholders
-              document.getElementById('first-name').textContent = data.queryset.first_name;
-              document.getElementById('last-name').textContent = data.queryset.last_name;
-              document.getElementById('phone-number').textContent = data.queryset.phone_number;
-              document.getElementById('user-email').textContent = data.queryset.email;
-              document.getElementById('profile-image').innerHTML = `<img src=${data.queryset.image} alt="Admin" class="rounded-circle" width="150">
-              <div class="mt-3">
-                <h4>${data.queryset.first_name} ${data.queryset.last_name}</h4>
-              </div>`;
-          })
-          .catch(error => console.error('Error fetching user data:', error));
+    <script src="/static/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/assets/js/theme.js"></script>
+    <script src="/static/script/profile.js"></script>
 
-    </script>
 </body>
 </html>
 

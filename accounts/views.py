@@ -172,7 +172,6 @@ class UpdateAddressAPIView(APIView):
     """
     permission_classes = [IsAuthenticated]
     def put(self, request,address_id):
-        print('000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000')
         address=Address.objects.get(id=address_id)
         user_ser = AddressSerializer(address, data=request.data, partial=True)
         if user_ser.is_valid():
@@ -208,7 +207,6 @@ class UpdateProfileAPIView(APIView):
     """
     permission_classes = [IsAuthenticated]
     def get(self, request):
-        print('000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000')
         user_ser = UserSerializer(instance=request.user)
 
         responses_data = {

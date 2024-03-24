@@ -7,7 +7,6 @@ urlpatterns = [
     path("pay/<int:order_id>" , OrderPay.as_view(),name="pay"),
     path('order_history' , order_history , name="order_history"),
     path('cart' , cart , name="cart"),
-    path("pay/<int:order_id>" , OrderPay.as_view(),name="pay"),
     path("verify/" , OrderVerify.as_view(),name="order_verify"),
     #===========api=============
     path('api/show_cart/' , ShowCart.as_view() , name="showcart"),    

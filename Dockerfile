@@ -1,13 +1,18 @@
-FROM python:latest
+FROM python:3.11.4-slim-buster
 
-WORKDIR /code
-COPY requirements.txt .
+# set work directory
+WORKDIR /usr/src/ONLINE_SHOP_SHADMEHRI
 
-RUN pip install -U pip
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# install dependencies
+RUN pip install --upgrade pip
+COPY ./requirements.txt .
 RUN pip install -r requirements.txt
-RUN pip install celery
 
-COPY . /code/
-EXPOSE 8000
-CMD ["gunicorn", "shop.wsgi", ":8000"]
+# copy project
+COPY . .
+
 

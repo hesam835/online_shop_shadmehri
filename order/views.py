@@ -19,7 +19,7 @@ from django.db.models import QuerySet
 from rest_framework import status
 from django.contrib.auth.models import AnonymousUser
 from django.views.decorators.cache import cache_page
-
+from ZarinPay import ZarinPay
 import json
 
 def cart(request):
@@ -223,6 +223,8 @@ class OrderPay(View):
 
 class OrderVerify(View):
     def get(self,request,authority):
+        Payment=ZarinPay()
+        createresponse=Payment.createpayment()
         order_id=request.session['order_pay']['order_id']
         order=Order.objects.get(id=int(order_id))
         data = {
@@ -234,6 +236,8 @@ class OrderVerify(View):
         # set content length by data
         headers = {'content-type': 'application/json', 'content-length': str(len(data)) }
         response = requests.post(ZP_API_VERIFY, data=data,headers=headers)
+        responseString = '{"Status":"true","RefID":"123456"}'
+        
         if response.status_code == 200:
             response = response.json()
             if response['Status'] == 100:
