@@ -32,3 +32,45 @@ function isLoggedIn() {
   // For example, you can check if there's a token stored in localStorage
   return localStorage.getItem('accessToken') == null;
 }
+
+document.getElementById("myForm-register").addEventListener("submit", function(event) {
+    event.preventDefault(); // Prevent default form submission
+    // Call the registerFunc() function to handle form submission
+    Register();
+
+});
+
+function Register() {
+    const formData = new FormData(document.getElementById("myForm-register"));
+    const data = {
+        first_name: formData.get('first_name'),
+        last_name: formData.get('last_name'),
+        email: formData.get('email'),
+        phone_number: formData.get('phone_number'),
+        password: formData.get('password')
+    };
+    fetch('/accounts/api/register/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+    .then(data => {
+
+        alert('We sent to your email an OTP code');
+
+        window.location.href = '/accounts/verify_code/';
+
+    })
+
+    .catch(error => {
+
+        console.error('Error:', error); 
+
+        alert(error);
+
+        window.location.reload();
+
+    });
+}

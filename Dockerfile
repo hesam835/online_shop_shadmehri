@@ -1,18 +1,12 @@
-FROM python:3.11.4-slim-buster
+from python:latest
 
-# set work directory
-WORKDIR /usr/src/ONLINE_SHOP_SHADMEHRI
+WORKDIR /ONLINE_SHOP_SHADMEHRI
+COPY requirements.txt /ONLINE_SHOP_SHADMEHRI/
 
-# set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+RUN pip install -U pip
+RUN pip install -r /ONLINE_SHOP_SHADMEHRI/requirements.txt
 
-# install dependencies
-RUN pip install --upgrade pip
-COPY ./requirements.txt .
-RUN pip install -r requirements.txt
-
-# copy project
-COPY . .
-
+COPY . /ONLINE_SHOP_SHADMEHRI/
+EXPOSE 8000
+CMD ["gunicorn", "shop.wsgi", ":8000"]
 

@@ -13,7 +13,7 @@ import environ
 env = environ.Env()
 environ.Env.read_env()
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -22,12 +22,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+
 SECRET_KEY = 'django-insecure-1=1j76v@($3z=5755@47^kh1q!fe^64&j-$%o-tjfcpg2zejx1'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(os.environ.get("DEBUG", default=0))
 
-ALLOWED_HOSTS = ['localhost']
+# 'DJANGO_ALLOWED_HOSTS' should be a single string of hosts with a space between each.
+# For example: 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
+ALLOWED_HOSTS = ['*']
+# SECURITY WARNING: don't run with debug turned on in production!
+
 
 
 # Application definition
@@ -50,7 +54,7 @@ INSTALLED_APPS = [
     'order',
     'product',
 ]
-
+CSRF_TRUSTED_ORIGINS = ["http://localhost",]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -100,8 +104,8 @@ DATABASES = {
         'NAME': 'cycle_shop',
         'USER': 'hesam835',
         'PASSWORD': 'Hes@m835sh',
-        'HOST': 'localhost',
-        'PORT': '',
+        'HOST': 'postgres',
+        'PORT': '5432',
     }
 }
 
@@ -144,10 +148,11 @@ USE_TZ = True
 import os
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-
-BASE_DIR / "static",
-]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_FINDERS = (
+'django.contrib.staticfiles.finders.FileSystemFinder',
+'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+)
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -164,14 +169,14 @@ AUTHENTICATION_BACKENDS = [
 
 
 
-REDIS_HOST = 'localhost' # Replace with your Redis server host
+REDIS_HOST = 'redis' # Replace with your Redis server host
 REDIS_PORT = 6379 # Replace with your Redis server port
 REDIS_DB = 0
 # cache
 CACHES = {
 "default": {
 "BACKEND": "django.core.cache.backends.redis.RedisCache",
-"LOCATION": env.str("REDIS_URL", "redis://localhost:6379/"),
+"LOCATION": env.str("REDIS_URL", "redis://redis:6379/"),
 "KEY_PREFIX": "shop",
 "TIMEOUT": 60 * 15, # in seconds: 60 * 15 (15 minutes)
 }

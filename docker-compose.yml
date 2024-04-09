@@ -1,13 +1,90 @@
 version: '3.8'
 
 services:
-  web:
-    build: .
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - ./:/usr/src/ONLINE_SHOP_SHADMEHRI/
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:latest
+    networks:
+      - main
     ports:
-      - 8000:8000
+      - "5672:5672"
+    restart: always
 
+  app:
+    container_name: app
+    build: .
+    command: sh -c "python manage.py migrate && gunicorn shop.wsgi -b 0.0.0.0:8000"
+    volumes:
+      - .:/ONLINE_SHOP_SHADMEHRI/
+    expose:
+      - "8000"
+    networks:
+      - main
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - postgres
+    restart: always
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=hesam835
+      - POSTGRES_PASSWORD=Hes@m835sh
+      - POSTGRES_DB=cycle_shop
+      - POSTGRES_HOST=postgres
+    networks:
+      - main
+    restart: always
+
+  nginx:
+    build: ./nginx
+    depends_on:
+      - app
+    networks:
+      - main
+    ports:
+      - "80:80"
+    restart: always
+    volumes:
+      - .:/ONLINE_SHOP_SHADMEHRI
+    
+  redis:
+    container_name: redis
+    image: redis:latest
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DATABASE=0
+    networks:
+      - main
+    ports:
+      - "6379:6379"
+    restart: always
+    volumes: 
+      - /path/to/local/data:/root/redis
+      - /path/to/local/redis.conf:/usr/local/etc/redis/redis.conf
+
+  celery_worker:
+    container_name: celery_worker
+    command: "celery -A shop worker -l INFO"
+    depends_on:
+      - app
+      - rabbitmq
+      - postgres
+    build: .
+    environment:
+      - C_FORCE_ROOT="true"
+    networks:
+      - main
+    restart: always
+networks:
+  main:
+volumes:
+  postgres_data:
+     
 
 

@@ -19,7 +19,7 @@ from django.db.models import QuerySet
 from rest_framework import status
 from django.contrib.auth.models import AnonymousUser
 from django.views.decorators.cache import cache_page
-from ZarinPay import ZarinPay
+# from ZarinPay import ZarinPay
 import json
 
 def cart(request):
@@ -222,28 +222,29 @@ class OrderPay(View):
             return {'status': False, 'code': 'connection error'}
 
 class OrderVerify(View):
-    def get(self,request,authority):
-        Payment=ZarinPay()
-        createresponse=Payment.createpayment()
-        order_id=request.session['order_pay']['order_id']
-        order=Order.objects.get(id=int(order_id))
-        data = {
-        "MerchantID": settings.MERCHANT,
-        "Amount": order.total_price,
-        "Authority": authority,
-    }
-        data = json.dumps(data)
-        # set content length by data
-        headers = {'content-type': 'application/json', 'content-length': str(len(data)) }
-        response = requests.post(ZP_API_VERIFY, data=data,headers=headers)
-        responseString = '{"Status":"true","RefID":"123456"}'
+    pass
+    # def get(self,request,authority):
+    #     Payment=ZarinPay()
+    #     createresponse=Payment.createpayment()
+    #     order_id=request.session['order_pay']['order_id']
+    #     order=Order.objects.get(id=int(order_id))
+    #     data = {
+    #     "MerchantID": settings.MERCHANT,
+    #     "Amount": order.total_price,
+    #     "Authority": authority,
+    # }
+    #     data = json.dumps(data)
+    #     # set content length by data
+    #     headers = {'content-type': 'application/json', 'content-length': str(len(data)) }
+    #     response = requests.post(ZP_API_VERIFY, data=data,headers=headers)
+    #     responseString = '{"Status":"true","RefID":"123456"}'
         
-        if response.status_code == 200:
-            response = response.json()
-            if response['Status'] == 100:
-                order.is_paid=True
-                order.save()
-                return {'status': True, 'RefID': response['RefID']}
-            else:
-                return {'status': False, 'code': str(response['Status'])}
-        return response
+    #     if response.status_code == 200:
+    #         response = response.json()
+    #         if response['Status'] == 100:
+    #             order.is_paid=True
+    #             order.save()
+    #             return {'status': True, 'RefID': response['RefID']}
+    #         else:
+    #             return {'status': False, 'code': str(response['Status'])}
+    #     return response

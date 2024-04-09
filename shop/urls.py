@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from product import urls as product_urls
-from accounts import urls as accounts_urls
+from accounts import urls
 from order import urls as order_urls
 from django.conf import settings  
 from django.conf.urls.static import static  
@@ -30,7 +30,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, Spec
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include(product_urls)),
-    path('accounts/',include(accounts_urls)),
+    path('accounts/',include(urls)),
     path('order/',include(order_urls)),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),

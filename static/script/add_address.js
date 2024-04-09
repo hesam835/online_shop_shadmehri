@@ -28,4 +28,6 @@ fetch('/accounts/api/add_address/', {
         'Content-Type': 'application/json',
     },
     body: JSON.stringify(data),
-})}
+    
+})
+}

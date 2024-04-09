@@ -1,13 +1,13 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Dashboard - Brand</title>
-    <link rel="stylesheet" href='/static/assets/bootstrap/css/bootstrap.min.css'>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
-    <link rel="stylesheet" href="/static/assets/fonts/fontawesome-all.min.css">
-</head>
+   <head>
+      <meta charset="utf-8">
+      <title>Dashboard - Brand</title>
+      <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}">
+      <script src="{% static 'assets/bootstrap/js/bootstrap.min.js' %}"></script>
+      <!-- Your custom CSS -->
+   </head>
 
 <body id="page-top">
     <div id="wrapper">
@@ -83,8 +83,10 @@
             </div>
             <div>        
             </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
-                <script src="/static/assets/bootstrap/js/bootstrap.min.js"></script>
-                <script src="/static/assets/js/theme.js"></script>
-                <script src="/static/script/customer_panel.js"></script>
+            <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+            <!-- Your scripts -->
+            <script src="/static/assets/bootstrap/js/bootstrap.min.js"></script>
+            <script src="/static/assets/js/theme.js"></script>
+            <script src="/static/script/customer_panel.js"></script>
                 </body>
 </html>

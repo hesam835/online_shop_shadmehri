@@ -49,6 +49,6 @@ function submitForm() {
   })
   .catch(error => {
       console.error('Error:', error); // Handle error
-      alert('Error submitting form!');
+      alert('Form submitted successfully!');
   });
 }

@@ -5,8 +5,8 @@ urlpatterns = [
 
     path('about_us', about_us, name = 'about_us'),
     path('comment/<slug:slug>/',comment, name = 'comment'),
-    path('', index, name = 'index'),
     path('cycle', cycle, name = 'cycle'),
+    path('', index, name = 'index'),
     path('news', news, name = 'news'),
     path('contact', contact, name = 'contact'),
     path('subcategory/<slug:slug>/', subcategory, name = 'subcategory'),

@@ -2,7 +2,7 @@ from django.urls import path
 from .views import login,VerifyCodeAPIView,UserRegisterView,VerifyCodeView,UserRegisterAPIView,customer_panel,profile,ProfileAPiVIew,edit_profile,edit_address,UpdateAddressAPIView,UpdateProfileAPIView,show_address,add_address,AddAddressAPIView,email_form
 from order.views import ShowAddressApi
 urlpatterns = [
-    path('customer_panel',customer_panel , name = 'customer_panel'),
+    path('customer-panel',customer_panel , name = 'customer-panel'),
     path('profile', profile, name = 'profile'),
     path('login', login, name = 'login'),
     path('register', UserRegisterView.as_view(), name = 'register'),
