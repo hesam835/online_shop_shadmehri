@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-from .tasks import send_otp_email
 from django.views import View
 from product.serializers import UserSerializer
 from .serializers import UserRegisterSerializer, OtpCodeSerializer , UserLoginSerializer,ProfileSerializer,AddressSerializer
@@ -24,7 +23,7 @@ from rest_framework.decorators import api_view, permission_classes
 from django.views.decorators.cache import cache_page
 
 # redis
-redis_client = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB)
+redis_client = redis.StrictRedis(host='redis', port=settings.REDIS_PORT, db=settings.REDIS_DB)
 
 
 class UserRegisterView(View):
@@ -35,6 +34,7 @@ class UserRegisterView(View):
         get(request): Renders the user registration form.
     """
     def get(self, request):
+        print("###########################################")
         return render(request, "register.html", {})
 
 
@@ -47,10 +47,12 @@ class UserRegisterAPIView(APIView):
     """
     permission_classes = [AllowAny, ]
     def post(self, request):
-        serializer = UserRegisterSerializer(data=request.POST)
+        serializer = UserRegisterSerializer(data=request.data)
         if serializer.is_valid():
             random_code = random.randint(1000, 9999)
-            send_otp_email.delay(serializer.validated_data["email"], random_code)
+            print("##########################")
+            print(random_code)
+            send_otp_email(serializer.validated_data["email"], random_code)
             redis_client.setex(serializer.validated_data["email"], 180, random_code)
             email = serializer.validated_data["email"]
             hidden_email = email[:6] + '*'*(len(email)-20) + email[-14:]
@@ -90,18 +92,16 @@ class VerifyCodeAPIView(APIView):
     """
     serializer_class=OtpCodeSerializer
     def post(self, request):
-        if "user_profile_info" not in request.session or "phone_number" not in request.session["user_profile_info"]:
-            messages.error(request, "Please register again", "danger")
-            return redirect("register")
-
-        email = request.session["user_profile_info"]["email"]
-
-        serializer = OtpCodeSerializer(data=request.POST)
+        try:
+            email = request.session["user_profile_info"]["email"]
+        except KeyError:
+            return Response({"error": "Please register again"},status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
-            stored_code = redis_client.get(email)
-            if stored_code and stored_code.decode('utf-8') == serializer.validated_data["code"]:
-                user_info = request.session["user_profile_info"]
+            code = serializer.validated_data.get("code")
+            if code == redis_client.get(email).decode('utf-8'):
+                user_info = request.session.get("user_profile_info")
                 try:
                     User.objects.create_user(
                         first_name=user_info["first_name"],
@@ -111,15 +111,33 @@ class VerifyCodeAPIView(APIView):
                         password=user_info["password"],
                     )
                     request.session.clear()
-                    messages.success(request, "You registered successfully")
-                    return redirect("login")
-                except:
-                    messages.error(request, "You are already registered", "danger")
-                    return redirect("login")
-            messages.error(request, "Code is not correct", "danger")
-            return redirect("verify_code")
-        return  redirect("login")
+                    return Response(
+                        {"message": "You are registered successfully",
+                            "redirect_url": reverse("accounts:user_login")},
+                        status=status.HTTP_200_OK
+                    )
+                except Exception as e:
+                    return Response(
+                        {"error": "Failed to register user", "detail": str(e)},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+            else:
+                return Response(
+                    {"error": "Incorrect code"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        else:
+            return Response(
+                {"error": "Invalid input data"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
+def send_otp_email(email, otp):
+    subject = 'Your OTP Code'
+    message = f'Your OTP code is: {otp}'
+    from_email = 'shadmehrihesam@gmail.com'
+    recipient_list = [email]
+    send_mail(subject, message, from_email, recipient_list)
 
 def login(request):
     return render(request,"login.html",context={})

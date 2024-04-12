@@ -22,7 +22,7 @@ document.getElementById('customer-panel-btn').addEventListener('click', function
        window.location.href = "{% url 'login' %}";
    } else {
        // If logged in, proceed to checkout page
-       window.location.href = "{% url 'customer_panel' %}";
+       window.location.href = "{% url 'customer-panel' %}";
    }
 });
 
@@ -32,9 +32,7 @@ function isLoggedIn() {
    // For example, you can check if there's a token stored in localStorage
    return localStorage.getItem('accessToken') == null;
 }
-var cartLength = cart.length;
-var cartLink = document.getElementById("cart-link");
-cartLink.textContent = "CART " + cartLength;
+
 document.addEventListener("DOMContentLoaded", function() {
     var loginLink = document.getElementById('loginLink');
     var logoutLink = document.getElementById('logoutLink');

@@ -66,7 +66,7 @@
                   <a class="nav-link" id="cart-link" href="/order/cart">CART</a>
                </li>
                <li class="nav-item">
-                  <a class="nav-link" href="/customer_panel" id="customer-panel-btn">Customer_panel</a>
+                  <a class="nav-link" href="/accounts/customer-panel" id="customer-panel-btn">Customer_panel</a>
                </li>
              </ul>
              <form class="form-inline my-2 my-lg-0">
@@ -135,9 +135,9 @@
                 </div>
              </div>
             <div style="padding-bottom:100px">
-                <form class="form-control form-control-user" style="padding-left:500px;padding-top:100px;padding-buttom:100px" action='verify_code_api' method="post">
+                <form class="form-control form-control-user" style="padding-left:500px;padding-top:100px;padding-buttom:100px" action='#' method="post" id="myForm">
                     <div class="col-md-12">
-                     <input class="contactus" placeholder="Code" type="type" name="code" required> 
+                     <input class="contactus" placeholder="Code" type="type" name="code" id="code" required> 
                      </div>
                     <button class="btn btn-primary">send</button>
                 </form>
@@ -154,5 +154,43 @@
             <script src="/static/product/js/owl.carousel.js"></script>
             <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
             <script src="/static/script/verify_code.js"></script>
+            <script>
+               document.getElementById("myForm").addEventListener("submit", function (event) {
+                  event.preventDefault();
+                  verifyFunc();
+              });
+              
+              function verifyFunc() {
+                  var code = document.getElementById('code').value;
+              
+                  fetch("/accounts/api/verify/", {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify({
+                          code: code
+                      })
+                  })
+                      .then(response => {
+                          if (!response.ok) {
+                              throw new Error('You are registered');
+                          }
+                          return response.json();
+                      })
+                      .then(data => {
+                          if (data.message) {
+                              alert(data.message);
+                          }
+              
+                          if (data.redirect_url) {
+                              window.location.href = data.redirect_url;
+                          }
+                      })
+                      .catch(error => {
+                          alert("Error occurred: " + error.message);
+                      });
+              }
+            </script>
 
         </body>
