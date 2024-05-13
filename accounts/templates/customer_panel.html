@@ -1,0 +1,125 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <title>Dashboard - Brand</title>
+      <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}">
+      <script src="{% static 'assets/bootstrap/js/bootstrap.min.js' %}"></script>
+      <!-- Your custom CSS -->
+   </head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0">
+            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+                <img src="/static/product/images/logo.png">
+            </a>
+                <hr class="sidebar-divider my-0">
+                <ul class="navbar-nav text-light" id="accordionSidebar">
+                    <li class="nav-item"><a class="nav-link active" href="/accounts/customer-panel"><span>dashboard</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/accounts/profile"><span>profile</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/order/order_history"><span>orders</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/accounts/show_address"><span>Address</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="/cycle"><span>Shop</span></a></li>
+                    <li class="nav-item"></li>
+                </ul>
+                <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
+            </div>
+        </nav>
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content">
+                <div class="container">
+                    <link rel="stylesheet" href="/static/profile/profile.css">
+                            <body>
+                              <div class="container">
+                                <h2>Product List</h2>
+                                <table class="table table-striped">
+                                <thead> 
+                                    <tr>
+                                    <th>Name</th>
+                                    <th>Order id</th>
+                                    <th>Total Price</th>
+                                    <th>is paid</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cart-items">
+                                </tbody>
+                                </table>
+                              </div>
+                            </div>
+                                    <div class="container">
+                                    <div class="user-information">
+                                        <h2>User Information</h2>
+                                        <hr>
+                                        <p>First Name: <span id="first-name"></span></p>
+                                        <hr>
+                                        <p>Last Name: <span id="last-name"></span></p>
+                                        <hr>
+                                        <p>Phone Number: <span id="phone-number"></span></p>
+                                        <hr>
+                                        <p>Email: <span id="user-email"></span></p>
+                                        <hr>
+                                    </div>                          
+                                        <div class="col-sm-12">
+                                          <a class="btn btn-info " target="__blank" href="https://www.bootdey.com/snippets/view/profile-edit-data-and-skills">Edit</a>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                    
+                                  <div class="row gutters-sm">
+                                    <div class="col-sm-6 mb-3">
+                                    </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        <div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a></div>
+                    </div>
+                </div>
+            </div>
+            <div>        
+            </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+            <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+            <!-- Your scripts -->
+            <script src="/static/assets/bootstrap/js/bootstrap.min.js"></script>
+            <script src="/static/assets/js/theme.js"></script>
+            <script>
+              function openNav() {
+                document.getElementById("mySidenav").style.width = "250px";
+                document.getElementById("main").style.marginLeft = "250px";
+              }
+              
+              function closeNav() {
+                document.getElementById("mySidenav").style.width = "0";
+                document.getElementById("main").style.marginLeft= "0";
+               
+              }
+            
+              $("#main").click(function(){
+                  $("#navbarSupportedContent").toggleClass("nav-normal")
+              })
+            
+
+            fetch('/accounts/api/profile/',{
+                method: 'GET',
+                headers: {
+                    'Authorization': 'JWT ' + localStorage.getItem('access_token'),
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Populate placeholders
+                document.getElementById('first-name').textContent = data.queryset.first_name;
+                document.getElementById('last-name').textContent = data.queryset.last_name;
+                document.getElementById('phone-number').textContent = data.queryset.phone_number;
+                document.getElementById('user-email').textContent = data.queryset.email;
+            })
+            .catch(error => console.error('Error fetching user data:', error));
+            </script>
+                </body>
+</html>

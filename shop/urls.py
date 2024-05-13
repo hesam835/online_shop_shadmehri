@@ -17,9 +17,28 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from product import urls as product_urls
-from accounts import urls as accounts_urls
+from accounts import urls
+from order import urls as order_urls
+from django.conf import settings  
+from django.conf.urls.static import static  
+from rest_framework.authtoken import views
+from djoser import views as djoser_views
+from djoser.views import UserViewSet
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('product/',include(product_urls)),
-    path('accounts/',include(accounts_urls)),
+    path('',include(product_urls)),
+    path('accounts/',include(urls)),
+    path('order/',include(order_urls)),
+    path('auth/', include('djoser.urls')),
+    path('auth/', include('djoser.urls.jwt')),
+    path("__debug__/", include("debug_toolbar.urls")),
+    path('schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    

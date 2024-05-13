@@ -9,9 +9,11 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+import environ
+env = environ.Env()
+environ.Env.read_env()
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,17 +22,27 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+
 SECRET_KEY = 'django-insecure-1=1j76v@($3z=5755@47^kh1q!fe^64&j-$%o-tjfcpg2zejx1'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(os.environ.get("DEBUG", default=0))
 
-ALLOWED_HOSTS = []
+# 'DJANGO_ALLOWED_HOSTS' should be a single string of hosts with a space between each.
+# For example: 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
+ALLOWED_HOSTS = ['*']
+# SECURITY WARNING: don't run with debug turned on in production!
+
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'debug_toolbar',
+    "drf_spectacular",
+    'rest_framework',
+    'djoser',
+    'rest_framework.authtoken',
+    'widget_tweaks',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,7 +54,7 @@ INSTALLED_APPS = [
     'order',
     'product',
 ]
-
+CSRF_TRUSTED_ORIGINS = ["http://localhost",]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -51,7 +63,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+
 ]
+
+
+if DEBUG:
+    INTERNAL_IPS = [
+        '127.0.0.1',
+    ]
 
 ROOT_URLCONF = 'shop.urls'
 
@@ -66,6 +86,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'order.context_processors.cart',
             ],
         },
     },
@@ -79,11 +100,14 @@ WSGI_APPLICATION = 'shop.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'cycle_shop',
+        'USER': 'hesam835',
+        'PASSWORD': 'Hes@m835sh',
+        'HOST': 'postgres',
+        'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -103,6 +127,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+def show_toolbar(request):
+    return True
+SHOW_TOOLBAR_CALLBACK = show_toolbar
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
@@ -118,13 +145,17 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
+import os
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_FINDERS = (
+'django.contrib.staticfiles.finders.FileSystemFinder',
+'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+)
 
-BASE_DIR / "static",
-]
-
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -133,6 +164,60 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = "accounts.User"
 
 AUTHENTICATION_BACKENDS = [
-    "accounts.authenticate.PhoneBackend",
-    "django.contrib.auth.backends.ModelBackend",
+    'django.contrib.auth.backends.ModelBackend',
 ]
+
+
+
+REDIS_HOST = 'redis' # Replace with your Redis server host
+REDIS_PORT = 6379 # Replace with your Redis server port
+REDIS_DB = 0
+# cache
+CACHES = {
+"default": {
+"BACKEND": "django.core.cache.backends.redis.RedisCache",
+"LOCATION": env.str("REDIS_URL", "redis://redis:6379/"),
+"KEY_PREFIX": "shop",
+"TIMEOUT": 60 * 15, # in seconds: 60 * 15 (15 minutes)
+}
+}
+
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+
+from datetime import timedelta
+SIMPLE_JWT = {
+'AUTH_HEADER_TYPES': ('JWT',),
+'ACCESS_TOKEN_LIFETIME': timedelta(days=3)
+}
+DJOSER = {
+'SERIALIZERS': {
+'user_create': 'accounts.serializers.UserCreateSerializer'
+},
+}
+
+
+REST_FRAMEWORK = {
+'COERCE_DECIMAL_TO_STRING': False,
+'DEFAULT_AUTHENTICATION_CLASSES': (
+'rest_framework_simplejwt.authentication.JWTAuthentication',
+),
+'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+
+}
+SPECTACULAR_SETTINGS = {
+'TITLE': 'cycle_shop',
+'DESCRIPTION': 'Your project description',
+'VERSION': '1.0.0',
+}
+
+MERCHANT = "00000000-0000-0000-0000-000000000000"
+
+SANDBOX = True
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True  # or False if your SMTP server doesn't use TLS
+EMAIL_HOST_USER = 'shadmehrihesam@gmail.com'
+EMAIL_HOST_PASSWORD = 'qdbm lals ymcw tjqf'
